@@ -1,0 +1,13 @@
+#!/bin/bash
+#tmpfile=$(mktemp /tmp/random-file.XXXXXX)
+#size=$1
+#dd if=/dev/urandom of=$tmpfile bs=$size count=1
+
+tmpfile=$1
+
+go build ./cmd/tzsum && \
+for c in tzC tz tzbits; do
+	./tzsum -cpuprofile cpu.prof -name $tmpfile -hash $c
+	echo top | go tool pprof cpu.prof
+	echo 
+done
