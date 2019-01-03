@@ -6,7 +6,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.11
-    working_directory: /{{ORG_NAME}}/{{REPO_NAME}}
+    working_directory: ~/{{ORG_NAME}}/{{REPO_NAME}}
     steps:
       - checkout
       - run: go test -v ./...
