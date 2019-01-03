@@ -24,12 +24,12 @@ TEXT ·mulBitRight(SB),NOSPLIT,$0
     XORPD X7, X5
     MOVUPD X5, X0
 
-	// c00 += c01
-	XORPD X1, X0
-	MOVUPD X0, (AX)
+    // c00 += c01
+    XORPD X1, X0
+    MOVUPD X0, (AX)
 
-	// c10 *= 2
-	VPSLLQ $1, X2, X5
+    // c10 *= 2
+    VPSLLQ $1, X2, X5
     VPALIGNR $8, X5, X2, X6
     PSRLQ $63, X6
     MOVUPD ·x127x63(SB), X7
@@ -39,7 +39,7 @@ TEXT ·mulBitRight(SB),NOSPLIT,$0
     XORPD X7, X5
     MOVUPD X5, X2
 
-	// c10 += c11
+    // c10 += c11
     XORPD X3, X2
     MOVUPD X2, (CX)
 
@@ -54,9 +54,9 @@ TEXT ·mulBitRight(SB),NOSPLIT,$0
     MOVUPD X1, (BX)
 
     // c11 = c10 + e
-	VANDPD X2, X5, X3
+    VANDPD X2, X5, X3
 
     // c11 += X9 (old c10)
-	XORPD X9, X3
-	MOVUPD X3, (DX)
-	RET
+    XORPD X9, X3
+    MOVUPD X3, (DX)
+    RET
