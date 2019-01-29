@@ -12,6 +12,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"math/bits"
+	"math/rand"
 )
 
 // GF127 represents element of GF(2^127)
@@ -34,6 +35,12 @@ var (
 // It is assumed that hi has zero MSB.
 func New(lo, hi uint64) *GF127 {
 	return &GF127{lo, hi}
+}
+
+// Random returns random element from GF(2^127).
+// Is used mostly for testing.
+func Random() *GF127 {
+	return &GF127{rand.Uint64(), rand.Uint64() >> 1}
 }
 
 // String returns hex-encoded representation, starting with MSB.

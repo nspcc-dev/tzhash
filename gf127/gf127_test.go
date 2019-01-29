@@ -1,17 +1,18 @@
 package gf127
 
 import (
-	"math/rand"
 	"testing"
 )
 
 const maxUint64 = ^uint64(0)
 
 func TestAdd(t *testing.T) {
-	a := &GF127{rand.Uint64(), rand.Uint64() >> 1}
-	b := &GF127{rand.Uint64(), rand.Uint64() >> 1}
-	e := &GF127{a[0] ^ b[0], a[1] ^ b[1]}
-	c := &GF127{0, 0}
+	var (
+		a = Random()
+		b = Random()
+		e = &GF127{a[0] ^ b[0], a[1] ^ b[1]}
+		c = new(GF127)
+	)
 	c.Add(a, b)
 	if e[0] != c[0] || e[1] != c[1] {
 		t.Errorf("expected (%s), got (%s)", e.String(), c.String())
@@ -74,10 +75,22 @@ var testCasesInv = [][2]*GF127{
 }
 
 func TestInv(t *testing.T) {
-	c := new(GF127)
+	var a, b, c = new(GF127), new(GF127), new(GF127)
 	for _, tc := range testCasesInv {
 		if Inv(tc[0], c); !c.Equals(tc[1]) {
 			t.Errorf("expected (%s), got (%s)", tc[1].String(), c.String())
+		}
+	}
+
+	for i := 0; i < 3; i++ {
+		// 0 has no inverse
+		if a = Random(); a.Equals(&GF127{0, 0}) {
+			continue
+		}
+		Inv(a, b)
+		Mul(a, b, c)
+		if !c.Equals(&GF127{1, 0}) {
+			t.Errorf("expected inverse of (%s), got (%s)", a.String(), b.String())
 		}
 	}
 }
