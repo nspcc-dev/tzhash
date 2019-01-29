@@ -15,9 +15,9 @@ func TestHash(t *testing.T) {
 		err       error
 		h, h1, h2 [hashSize]byte
 		b         []byte
-	)
 
-	g := NewGomegaWithT(t)
+		g = NewGomegaWithT(t)
+	)
 
 	b = make([]byte, 64)
 	n, err = rand.Read(b)
@@ -31,6 +31,7 @@ func TestHash(t *testing.T) {
 
 	err = c1.UnmarshalBinary(h1[:])
 	g.Expect(err).NotTo(HaveOccurred())
+
 	err = c2.UnmarshalBinary(h2[:])
 	g.Expect(err).NotTo(HaveOccurred())
 
@@ -62,9 +63,9 @@ func TestConcat(t *testing.T) {
 		got, expected []byte
 		ps            [][]byte
 		err           error
-	)
 
-	g := NewGomegaWithT(t)
+		g = NewGomegaWithT(t)
+	)
 
 	for _, tc := range testCases {
 		expected, err = hex.DecodeString(tc.Hash)
@@ -105,5 +106,48 @@ func TestValidate(t *testing.T) {
 		got, err = Validate(hash, ps)
 		g.Expect(err).NotTo(HaveOccurred())
 		g.Expect(got).To(Equal(true))
+	}
+}
+
+var testCasesSubtract = []struct {
+	first, second, result string
+}{
+	{
+		first:  "4275945919296224acd268456be23b8b2df931787a46716477e32cd991e98074029d4f03a0fedc09125ee4640d228d7d40d430659a0b2b70e9cd4d4c5361865a",
+		second: "277c10e0d7c52fcc0b23ba7dbf2c3dde7dcfc1f7c0cc0d998b2de504b8c1e17c6f65ab1294aea676d4060ed2ca18c1c26fd7cec5012ab69a4ddb5e6555ac8a59",
+		result: "7f5c9280352a8debea738a74abd4ec787f2c5e556800525692f651087442f9883bb97a2c1bc72d12ba26e3df8dc0f670564292ebc984976a8e353ff69a5fb3cb",
+	},
+	{
+		first:  "18e2ce290cc74998ebd0bef76454b52a40428f13bb612e40b5b96187e9cc813248a0ed5f7ec9fb205d55d3f243e2211363f171b19eb8acc7931cf33853a79069",
+		second: "73a0582fa7d00d62fd09c1cd18589cdb2b126cb58b3a022ae47a8a787dabe35c4388aaf0d8bb343b1e58ee8d267812d115f40a0da611f42458f452e102f60700",
+		result: "54ccaad1bb15b2989fa31109713bca955ea5d87bbd3113b3008cea167c00052266e9c9fcb73ece98c6c08cccb074ba3d39b5d8685f022fc388e2bf1997c5bd1d",
+	},
+}
+
+func TestSubtract(t *testing.T) {
+	var (
+		a, b, c, r []byte
+		err        error
+
+		g = NewGomegaWithT(t)
+	)
+
+	for _, tc := range testCasesSubtract {
+		a, err = hex.DecodeString(tc.first)
+		g.Expect(err).NotTo(HaveOccurred())
+
+		b, err = hex.DecodeString(tc.second)
+		g.Expect(err).NotTo(HaveOccurred())
+
+		c, err = hex.DecodeString(tc.result)
+		g.Expect(err).NotTo(HaveOccurred())
+
+		r, err = SubtractR(c, b)
+		g.Expect(err).NotTo(HaveOccurred())
+		g.Expect(r).To(Equal(a))
+
+		r, err = SubtractL(c, a)
+		g.Expect(err).NotTo(HaveOccurred())
+		g.Expect(r).To(Equal(b))
 	}
 }

@@ -19,7 +19,7 @@ import (
 type GF127 [2]uint64
 
 const (
-	msb64    = 0x8000000000000000
+	msb64    = uint64(0x8000000000000000)
 	byteSize = 16
 )
 
@@ -110,8 +110,7 @@ func Inv(a, b *GF127) {
 		// becasuse mul performs reduction on t, we need
 		// manually reduce u at first step
 		if msb(&u) == 127 {
-			Add(&u, &x127x63, &u)
-			Add(&u, &GF127{1, 0}, &u)
+			Add(&u, &x127x631, &u)
 		}
 
 		Mul(x, d, t)
@@ -124,7 +123,7 @@ func xN(n int) *GF127 {
 	if n < 64 {
 		return &GF127{1 << uint(n), 0}
 	}
-	return &GF127{0, 1 << (uint(n) >> 8)}
+	return &GF127{0, 1 << uint(n-64)}
 }
 
 func msb(a *GF127) (x int) {

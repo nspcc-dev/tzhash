@@ -132,6 +132,25 @@ func (c *sl2) Mul(a, b *sl2) *sl2 {
 	return c.mul(a, b, new([4]gf127.GF127))
 }
 
+// Inv returns inverse of a in GL_2(GF(2^127))
+func Inv(a *sl2) (b *sl2) {
+	b = new(sl2)
+	inv(a, b, new([2]gf127.GF127))
+	return
+}
+
+func inv(a, b *sl2, t *[2]gf127.GF127) {
+	gf127.Mul(&a[0][0], &a[1][1], &t[0])
+	gf127.Mul(&a[0][1], &a[1][0], &t[1])
+	gf127.Add(&t[0], &t[1], &t[0])
+	gf127.Inv(&t[0], &t[1])
+
+	gf127.Mul(&t[1], &a[0][0], &b[1][1])
+	gf127.Mul(&t[1], &a[0][1], &b[0][1])
+	gf127.Mul(&t[1], &a[1][0], &b[1][0])
+	gf127.Mul(&t[1], &a[1][1], &b[0][0])
+}
+
 func (c *sl2) String() string {
 	return c[0][0].String() + c[0][1].String() +
 		c[1][0].String() + c[1][1].String()

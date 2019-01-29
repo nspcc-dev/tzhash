@@ -133,4 +133,42 @@ func Validate(h []byte, hs [][]byte) (bool, error) {
 	return expected == got, nil
 }
 
+// SubtractR returns hash a, such that Concat(a, b) == c
+// This is possible, because Tillich-Zemor hash is actually a matrix
+// which can be inversed.
+func SubtractR(c, b []byte) (a []byte, err error) {
+	var p1, p2, r sl2
+
+	if err = r.UnmarshalBinary(c); err != nil {
+		return nil, err
+	}
+	if err = p2.UnmarshalBinary(b); err != nil {
+		return nil, err
+	}
+
+	p1 = *Inv(&p2)
+	p1.Mul(&r, &p1)
+
+	return p1.MarshalBinary()
+}
+
+// SubtractL returns hash b, such that Concat(a, b) == c
+// This is possible, because Tillich-Zemor hash is actually a matrix
+// which can be inversed.
+func SubtractL(c, a []byte) (b []byte, err error) {
+	var p1, p2, r sl2
+
+	if err = r.UnmarshalBinary(c); err != nil {
+		return nil, err
+	}
+	if err = p1.UnmarshalBinary(a); err != nil {
+		return nil, err
+	}
+
+	p2 = *Inv(&p1)
+	p2.Mul(&p2, &r)
+
+	return p2.MarshalBinary()
+}
+
 func mulBitRight(c00, c01, c10, c11, e *gf127.GF127)
