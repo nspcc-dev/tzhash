@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"testing"
 
-	. "github.com/onsi/gomega"
+	"github.com/stretchr/testify/require"
 )
 
 func TestHash(t *testing.T) {
@@ -15,14 +15,12 @@ func TestHash(t *testing.T) {
 		err       error
 		h, h1, h2 [hashSize]byte
 		b         []byte
-
-		g = NewGomegaWithT(t)
 	)
 
 	b = make([]byte, 64)
 	n, err = rand.Read(b)
-	g.Expect(n).To(Equal(64))
-	g.Expect(err).NotTo(HaveOccurred())
+	require.Equal(t, 64, n)
+	require.NoError(t, err)
 
 	// Test if our hashing is really homomorphic
 	h = Sum(b)
@@ -30,13 +28,12 @@ func TestHash(t *testing.T) {
 	h2 = Sum(b[32:])
 
 	err = c1.UnmarshalBinary(h1[:])
-	g.Expect(err).NotTo(HaveOccurred())
-
+	require.NoError(t, err)
 	err = c2.UnmarshalBinary(h2[:])
-	g.Expect(err).NotTo(HaveOccurred())
+	require.NoError(t, err)
 
 	c1.Mul(&c1, &c2)
-	g.Expect(c1.ByteArray()).To(Equal(h))
+	require.Equal(t, h, c1.ByteArray())
 }
 
 var testCases = []struct {
@@ -60,26 +57,24 @@ var testCases = []struct {
 
 func TestConcat(t *testing.T) {
 	var (
-		got, expected []byte
-		ps            [][]byte
-		err           error
-
-		g = NewGomegaWithT(t)
+		actual, expect []byte
+		ps             [][]byte
+		err            error
 	)
 
 	for _, tc := range testCases {
-		expected, err = hex.DecodeString(tc.Hash)
-		g.Expect(err).NotTo(HaveOccurred())
+		expect, err = hex.DecodeString(tc.Hash)
+		require.NoError(t, err)
 
 		ps = make([][]byte, len(tc.Parts))
 		for j := 0; j < len(tc.Parts); j++ {
 			ps[j], err = hex.DecodeString(tc.Parts[j])
-			g.Expect(err).NotTo(HaveOccurred())
+			require.NoError(t, err)
 		}
 
-		got, err = Concat(ps)
-		g.Expect(err).NotTo(HaveOccurred())
-		g.Expect(got).To(Equal(expected))
+		actual, err = Concat(ps)
+		require.NoError(t, err)
+		require.Equal(t, expect, actual)
 	}
 }
 
@@ -91,21 +86,19 @@ func TestValidate(t *testing.T) {
 		err  error
 	)
 
-	g := NewGomegaWithT(t)
-
 	for _, tc := range testCases {
 		hash, _ = hex.DecodeString(tc.Hash)
-		g.Expect(err).NotTo(HaveOccurred())
+		require.NoError(t, err)
 
 		ps = make([][]byte, len(tc.Parts))
 		for j := 0; j < len(tc.Parts); j++ {
 			ps[j], _ = hex.DecodeString(tc.Parts[j])
-			g.Expect(err).NotTo(HaveOccurred())
+			require.NoError(t, err)
 		}
 
 		got, err = Validate(hash, ps)
-		g.Expect(err).NotTo(HaveOccurred())
-		g.Expect(got).To(Equal(true))
+		require.NoError(t, err)
+		require.True(t, got)
 	}
 }
 
@@ -128,26 +121,24 @@ func TestSubtract(t *testing.T) {
 	var (
 		a, b, c, r []byte
 		err        error
-
-		g = NewGomegaWithT(t)
 	)
 
 	for _, tc := range testCasesSubtract {
 		a, err = hex.DecodeString(tc.first)
-		g.Expect(err).NotTo(HaveOccurred())
+		require.NoError(t, err)
 
 		b, err = hex.DecodeString(tc.second)
-		g.Expect(err).NotTo(HaveOccurred())
+		require.NoError(t, err)
 
 		c, err = hex.DecodeString(tc.result)
-		g.Expect(err).NotTo(HaveOccurred())
+		require.NoError(t, err)
 
 		r, err = SubtractR(c, b)
-		g.Expect(err).NotTo(HaveOccurred())
-		g.Expect(r).To(Equal(a))
+		require.NoError(t, err)
+		require.Equal(t, a, r)
 
 		r, err = SubtractL(c, a)
-		g.Expect(err).NotTo(HaveOccurred())
-		g.Expect(r).To(Equal(b))
+		require.NoError(t, err)
+		require.Equal(t, b, r)
 	}
 }
