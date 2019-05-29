@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/nspcc-dev/tzhash/gf127"
-	. "github.com/onsi/gomega"
+	"github.com/stretchr/testify/require"
 )
 
 func init() {
@@ -35,23 +35,19 @@ func TestSL2_MarshalBinary(t *testing.T) {
 	var (
 		a = random()
 		b = new(sl2)
-		g = NewGomegaWithT(t)
 	)
 
 	data, err := a.MarshalBinary()
-	g.Expect(err).NotTo(HaveOccurred())
+	require.NoError(t, err)
 
 	err = b.UnmarshalBinary(data)
-	g.Expect(err).NotTo(HaveOccurred())
+	require.NoError(t, err)
 
-	g.Expect(a).To(Equal(b))
+	require.Equal(t, a, b)
 }
 
 func TestInv(t *testing.T) {
-	var (
-		a, b, c *sl2
-		g       = NewGomegaWithT(t)
-	)
+	var a, b, c *sl2
 
 	c = new(sl2)
 	for i := 0; i < 5; i++ {
@@ -59,6 +55,6 @@ func TestInv(t *testing.T) {
 		b = Inv(a)
 		c = c.Mul(a, b)
 
-		g.Expect(*c).To(Equal(id))
+		require.Equal(t, id, *c)
 	}
 }
