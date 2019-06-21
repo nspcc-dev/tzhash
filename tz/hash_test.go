@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const benchDataSize = 1000000
+const benchDataSize = 100000
 
 var testCases = []struct {
 	input []byte
@@ -36,10 +36,8 @@ func TestHash(t *testing.T) {
 			d.Reset()
 			_, _ = d.Write(tc.input)
 			sum := d.checkSum()
-			hash := hex.EncodeToString(sum[:])
-			if hash != tc.hash {
-				t.Errorf("expected (%s), got (%s)", tc.hash, hash)
-			}
+
+			require.Equal(t, tc.hash, hex.EncodeToString(sum[:]))
 		}
 	})
 
@@ -49,10 +47,8 @@ func TestHash(t *testing.T) {
 			d.Reset()
 			_, _ = d.Write(tc.input)
 			sum := d.checkSum()
-			hash := hex.EncodeToString(sum[:])
-			if hash != tc.hash {
-				t.Errorf("expected (%s), got (%s)", tc.hash, hash)
-			}
+
+			require.Equal(t, tc.hash, hex.EncodeToString(sum[:]))
 		}
 	})
 }
