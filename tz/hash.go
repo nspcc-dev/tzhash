@@ -7,6 +7,7 @@ import (
 	"errors"
 	"hash"
 	"math"
+	"unsafe"
 
 	"github.com/nspcc-dev/tzhash/gf127"
 )
@@ -16,12 +17,19 @@ const (
 	hashBlockSize = 128
 )
 
-type digest struct {
-	x [4]gf127.GF127
-}
+type (
+	digest struct {
+		x [4]gf127.GF127
+	}
 
-// type assertion
-var _ hash.Hash = new(digest)
+	digest2 digest
+)
+
+// type assertions
+var (
+	_ hash.Hash = new(digest)
+	_ hash.Hash = new(digest2)
+)
 
 var (
 	minmax  = [2]gf127.GF127{{0, 0}, {math.MaxUint64, math.MaxUint64}}
@@ -85,9 +93,44 @@ func (d *digest) BlockSize() int {
 	return hashBlockSize
 }
 
+func (d *digest2) Write(data []byte) (n int, err error) {
+	n = len(data)
+
+	// We need to transpose matrix, because
+	// mulBitRightx2 accepts matrix by columns, not rows
+	a := d.x[1]
+	d.x[1] = d.x[2]
+	d.x[2] = a
+
+	h1 := (*gf127.GF127x2)(unsafe.Pointer(&d.x[0]))
+	h2 := (*gf127.GF127x2)(unsafe.Pointer(&d.x[2]))
+	for _, b := range data {
+		mulBitRightx2(h1, h2, &minmax[(b>>7)&1])
+		mulBitRightx2(h1, h2, &minmax[(b>>6)&1])
+		mulBitRightx2(h1, h2, &minmax[(b>>5)&1])
+		mulBitRightx2(h1, h2, &minmax[(b>>4)&1])
+		mulBitRightx2(h1, h2, &minmax[(b>>3)&1])
+		mulBitRightx2(h1, h2, &minmax[(b>>2)&1])
+		mulBitRightx2(h1, h2, &minmax[(b>>1)&1])
+		mulBitRightx2(h1, h2, &minmax[(b>>0)&1])
+	}
+
+	// transpose matrix back
+	a = d.x[1]
+	d.x[1] = d.x[2]
+	d.x[2] = a
+
+	return
+}
+func (d *digest2) Sum(b []byte) []byte      { return (*digest)(d).Sum(b) }
+func (d *digest2) Reset()                   { (*digest)(d).Reset() }
+func (d *digest2) Size() int                { return (*digest)(d).Size() }
+func (d *digest2) BlockSize() int           { return (*digest)(d).BlockSize() }
+func (d *digest2) checkSum() [hashSize]byte { return (*digest)(d).checkSum() }
+
 // Sum returnz Tillich-Zémor checksum of data
 func Sum(data []byte) [hashSize]byte {
-	d := new(digest)
+	d := new(digest2)
 	d.Reset()
 	d.Write(data)
 	return d.checkSum()
@@ -172,3 +215,4 @@ func SubtractL(c, a []byte) (b []byte, err error) {
 }
 
 func mulBitRight(c00, c01, c10, c11, e *gf127.GF127)
+func mulBitRightx2(c00c01 *gf127.GF127x2, c10c11 *gf127.GF127x2, e *gf127.GF127)
