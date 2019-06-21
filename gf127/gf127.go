@@ -164,8 +164,8 @@ func Add(a, b, c *GF127)
 // Mul sets c to a*b.
 func Mul(a, b, c *GF127)
 
-// Mul10 sets y to a*x.
+// Mul10 sets b to a*x.
 func Mul10(a, b *GF127)
 
-// Mul11 sets y to a*(x+1).
+// Mul11 sets b to a*(x+1).
 func Mul11(a, b *GF127)
