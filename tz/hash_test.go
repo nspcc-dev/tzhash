@@ -2,11 +2,14 @@ package tz
 
 import (
 	"encoding/hex"
+	"io"
 	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
+
+const benchDataSize = 1000000
 
 var testCases = []struct {
 	input []byte
@@ -48,6 +51,43 @@ func TestHash(t *testing.T) {
 			}
 		}
 	})
+}
+
+func newBuffer() (data []byte) {
+	data = make([]byte, benchDataSize)
+
+	r := rand.New(rand.NewSource(0))
+	_, err := io.ReadFull(r, data)
+	if err != nil {
+		panic("cant initialize buffer")
+	}
+	return
+}
+
+func BenchmarkAVX(b *testing.B) {
+	data := newBuffer()
+
+	b.ResetTimer()
+	b.ReportAllocs()
+	d := new(digest)
+	for i := 0; i < b.N; i++ {
+		d.Reset()
+		_, _ = d.Write(data)
+		d.checkSum()
+	}
+}
+
+func BenchmarkAVX2(b *testing.B) {
+	data := newBuffer()
+
+	b.ResetTimer()
+	b.ReportAllocs()
+	d := new(digest2)
+	for i := 0; i < b.N; i++ {
+		d.Reset()
+		_, _ = d.Write(data)
+		d.checkSum()
+	}
 }
 
 func TestHomomorphism(t *testing.T) {
