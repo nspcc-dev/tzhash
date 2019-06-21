@@ -16,6 +16,10 @@ var testCases = []struct {
 	hash  string
 }{
 	{
+		[]byte{},
+		"00000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+	},
+	{
 		[]byte{0, 1, 2, 3, 4, 5, 6, 7, 8},
 		"00000000000001e4a545e5b90fb6882b00000000000000c849cd88f79307f67100000000000000cd0c898cb68356e624000000000000007cbcdc7c5e89b16e4b",
 	},
@@ -40,7 +44,7 @@ func TestHash(t *testing.T) {
 	})
 
 	t.Run("test AVX2 digest", func(t *testing.T) {
-		d := new(digest)
+		d := new(digest2)
 		for _, tc := range testCases {
 			d.Reset()
 			_, _ = d.Write(tc.input)

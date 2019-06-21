@@ -64,9 +64,9 @@ TEXT ·mulBitRight(SB),NOSPLIT,$0
 
 // func mulBitRightx2(c00c10, c01c11 *[4]uint64, e *[2]uint64)
 TEXT ·mulBitRightx2(SB),NOSPLIT,$0
-    MOVQ c00c01+0(FP), AX
+    MOVQ c00c10+0(FP), AX
     VMOVDQA (AX), Y0
-    MOVQ c10c11+8(FP), BX
+    MOVQ c01c11+8(FP), BX
     VMOVDQA (BX), Y8
 
     VPSLLQ $1, Y0, Y1

@@ -35,7 +35,7 @@ func (d *digest2) Sum(in []byte) []byte {
 }
 func (d *digest2) Reset() {
 	d.x[0] = gf127.GF127x2{1, 0, 0, 0}
-	d.x[1] = gf127.GF127x2{0, 0, 0, 1}
+	d.x[1] = gf127.GF127x2{0, 0, 1, 0}
 }
 func (d *digest2) Size() int      { return hashSize }
 func (d *digest2) BlockSize() int { return hashBlockSize }
@@ -43,12 +43,12 @@ func (d *digest2) checkSum() (b [hashSize]byte) {
 	// Matrix is stored transposed,
 	// but we need to use order consistent with digest.
 	h := d.x[0].ByteArray()
-	copy(b[:], h[:8])
-	copy(b[16:], h[8:])
+	copy(b[:], h[:16])
+	copy(b[32:], h[16:])
 
 	h = d.x[1].ByteArray()
-	copy(b[8:], h[:8])
-	copy(b[24:], h[8:])
+	copy(b[16:], h[:16])
+	copy(b[48:], h[16:])
 	return
 }
 

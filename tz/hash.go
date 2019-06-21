@@ -47,11 +47,10 @@ func (d *digest) checkSum() [hashSize]byte {
 }
 
 func (d *digest) byteArray() (b [hashSize]byte) {
-	var t []byte
-	for i := 0; i < 4; i++ {
-		t = d.x[i].ByteArray()
-		copy(b[i*16:], t)
-	}
+	copy(b[:], d.x[0].ByteArray())
+	copy(b[16:], d.x[1].ByteArray())
+	copy(b[32:], d.x[2].ByteArray())
+	copy(b[48:], d.x[3].ByteArray())
 	return
 }
 
@@ -85,9 +84,18 @@ func (d *digest) BlockSize() int {
 	return hashBlockSize
 }
 
-// Sum returnz Tillich-Zémor checksum of data
-func Sum(data []byte) [hashSize]byte {
+// Sum returnz Tillich-Zémor checksum of data.
+// It uses only AVX instructions (no AVX2).
+func SumAVX(data []byte) [hashSize]byte {
 	d := new(digest)
+	d.Reset()
+	_, _ = d.Write(data) // no errors
+	return d.checkSum()
+}
+
+// Sum returns Tillich-Zémor checksum of data.
+func Sum(data []byte) [hashSize]byte {
+	d := new(digest2)
 	d.Reset()
 	_, _ = d.Write(data) // no errors
 	return d.checkSum()
