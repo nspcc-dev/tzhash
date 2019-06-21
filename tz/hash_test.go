@@ -8,7 +8,49 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+var testCases = []struct {
+	input []byte
+	hash  string
+}{
+	{
+		[]byte{0, 1, 2, 3, 4, 5, 6, 7, 8},
+		"00000000000001e4a545e5b90fb6882b00000000000000c849cd88f79307f67100000000000000cd0c898cb68356e624000000000000007cbcdc7c5e89b16e4b",
+	},
+	{
+		[]byte{4, 8, 15, 16, 23, 42, 255, 0, 127, 65, 32, 123, 42, 45, 201, 210, 213, 244},
+		"4db8a8e253903c70ab0efb65fe6de05a36d1dc9f567a147152d0148a86817b2062908d9b026a506007c1118e86901b672a39317c55ee3c10ac8efafa79efe8ee",
+	},
+}
+
 func TestHash(t *testing.T) {
+	t.Run("test AVX digest", func(t *testing.T) {
+		d := new(digest)
+		for _, tc := range testCases {
+			d.Reset()
+			_, _ = d.Write(tc.input)
+			sum := d.checkSum()
+			hash := hex.EncodeToString(sum[:])
+			if hash != tc.hash {
+				t.Errorf("expected (%s), got (%s)", tc.hash, hash)
+			}
+		}
+	})
+
+	t.Run("test AVX2 digest", func(t *testing.T) {
+		d := new(digest)
+		for _, tc := range testCases {
+			d.Reset()
+			_, _ = d.Write(tc.input)
+			sum := d.checkSum()
+			hash := hex.EncodeToString(sum[:])
+			if hash != tc.hash {
+				t.Errorf("expected (%s), got (%s)", tc.hash, hash)
+			}
+		}
+	})
+}
+
+func TestHomomorphism(t *testing.T) {
 	var (
 		c1, c2    sl2
 		n         int
@@ -36,7 +78,7 @@ func TestHash(t *testing.T) {
 	require.Equal(t, h, c1.ByteArray())
 }
 
-var testCases = []struct {
+var testCasesConcat = []struct {
 	Hash  string
 	Parts []string
 }{{
@@ -62,7 +104,7 @@ func TestConcat(t *testing.T) {
 		err            error
 	)
 
-	for _, tc := range testCases {
+	for _, tc := range testCasesConcat {
 		expect, err = hex.DecodeString(tc.Hash)
 		require.NoError(t, err)
 
@@ -86,7 +128,7 @@ func TestValidate(t *testing.T) {
 		err  error
 	)
 
-	for _, tc := range testCases {
+	for _, tc := range testCasesConcat {
 		hash, _ = hex.DecodeString(tc.Hash)
 		require.NoError(t, err)
 
