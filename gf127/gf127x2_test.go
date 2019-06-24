@@ -1,6 +1,10 @@
 package gf127
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
 
 var testCasesSplit = []struct {
 	num *GF127x2
@@ -14,9 +18,8 @@ var testCasesSplit = []struct {
 func TestSplit(t *testing.T) {
 	for _, tc := range testCasesSplit {
 		a, b := Split(tc.num)
-		if !a.Equals(tc.h1) || !b.Equals(tc.h2) {
-			t.Errorf("expected (%s,%s), got (%s,%s)", tc.h1, tc.h2, a, b)
-		}
+		require.Equal(t, tc.h1, a)
+		require.Equal(t, tc.h2, b)
 	}
 }
 
@@ -24,9 +27,7 @@ func TestCombineTo(t *testing.T) {
 	c := new(GF127x2)
 	for _, tc := range testCasesSplit {
 		CombineTo(tc.h1, tc.h2, c)
-		if !c.Equal(tc.num) {
-			t.Errorf("expected (%s), got (%s)", tc.num, c)
-		}
+		require.Equal(t, tc.num, c)
 	}
 }
 
@@ -39,9 +40,8 @@ var testCasesMul10x2 = [][2]*GF127x2{
 func TestMul10x2(t *testing.T) {
 	c := new(GF127x2)
 	for _, tc := range testCasesMul10x2 {
-		if Mul10x2(tc[0], c); !c.Equal(tc[1]) {
-			t.Errorf("expected (%s), got (%s)", tc[1], c)
-		}
+		Mul10x2(tc[0], c)
+		require.Equal(t, tc[1], c)
 	}
 }
 
@@ -54,8 +54,7 @@ var testCasesMul11x2 = [][2]*GF127x2{
 func TestMul11x2(t *testing.T) {
 	c := new(GF127x2)
 	for _, tc := range testCasesMul11x2 {
-		if Mul11x2(tc[0], c); !c.Equal(tc[1]) {
-			t.Errorf("expected (%s), got (%s)", tc[1], c)
-		}
+		Mul11x2(tc[0], c)
+		require.Equal(t, tc[1], c)
 	}
 }

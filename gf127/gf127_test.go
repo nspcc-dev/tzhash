@@ -2,6 +2,8 @@ package gf127
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 const maxUint64 = ^uint64(0)
@@ -14,9 +16,7 @@ func TestAdd(t *testing.T) {
 		c = new(GF127)
 	)
 	c.Add(a, b)
-	if e[0] != c[0] || e[1] != c[1] {
-		t.Errorf("expected (%s), got (%s)", e.String(), c.String())
-	}
+	require.Equal(t, e, c)
 }
 
 var testCasesMul = [][3]*GF127{
@@ -33,9 +33,8 @@ var testCasesMul = [][3]*GF127{
 func TestMul(t *testing.T) {
 	c := new(GF127)
 	for _, tc := range testCasesMul {
-		if Mul(tc[0], tc[1], c); !c.Equals(tc[2]) {
-			t.Errorf("expected (%s), got (%s)", c.String(), tc[2].String())
-		}
+		Mul(tc[0], tc[1], c)
+		require.Equal(t, tc[2], c)
 	}
 }
 
@@ -48,9 +47,8 @@ var testCasesMul10 = [][2]*GF127{
 func TestMul10(t *testing.T) {
 	c := new(GF127)
 	for _, tc := range testCasesMul10 {
-		if Mul10(tc[0], c); !c.Equals(tc[1]) {
-			t.Errorf("expected (%s), got (%s)", tc[1].String(), c.String())
-		}
+		Mul10(tc[0], c)
+		require.Equal(t, tc[1], c)
 	}
 }
 
@@ -63,9 +61,8 @@ var testCasesMul11 = [][2]*GF127{
 func TestMul11(t *testing.T) {
 	c := new(GF127)
 	for _, tc := range testCasesMul11 {
-		if Mul11(tc[0], c); !c.Equals(tc[1]) {
-			t.Errorf("expected (%s), got (%s)", tc[1].String(), c.String())
-		}
+		Mul11(tc[0], c)
+		require.Equal(t, tc[1], c)
 	}
 }
 
@@ -78,9 +75,8 @@ var testCasesInv = [][2]*GF127{
 func TestInv(t *testing.T) {
 	var a, b, c = new(GF127), new(GF127), new(GF127)
 	for _, tc := range testCasesInv {
-		if Inv(tc[0], c); !c.Equals(tc[1]) {
-			t.Errorf("expected (%s), got (%s)", tc[1].String(), c.String())
-		}
+		Inv(tc[0], c)
+		require.Equal(t, tc[1], c)
 	}
 
 	for i := 0; i < 3; i++ {
@@ -90,8 +86,25 @@ func TestInv(t *testing.T) {
 		}
 		Inv(a, b)
 		Mul(a, b, c)
-		if !c.Equals(&GF127{1, 0}) {
-			t.Errorf("expected inverse of (%s), got (%s)", a.String(), b.String())
-		}
+		require.Equal(t, &GF127{1, 0}, c)
 	}
+}
+
+func TestGF127_MarshalBinary(t *testing.T) {
+	a := New(0xFF, 0xEE)
+	data, err := a.MarshalBinary()
+	require.NoError(t, err)
+	require.Equal(t, data, []byte{0, 0, 0, 0, 0, 0, 0, 0xEE, 0, 0, 0, 0, 0, 0, 0, 0xFF})
+
+	a = Random()
+	data, err = a.MarshalBinary()
+	require.NoError(t, err)
+
+	b := new(GF127)
+	err = b.UnmarshalBinary(data)
+	require.NoError(t, err)
+	require.Equal(t, a, b)
+
+	err = b.UnmarshalBinary([]byte{0, 1, 2, 3})
+	require.Error(t, err)
 }
