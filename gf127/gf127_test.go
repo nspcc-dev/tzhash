@@ -89,3 +89,22 @@ func TestInv(t *testing.T) {
 		require.Equal(t, &GF127{1, 0}, c)
 	}
 }
+
+func TestGF127_MarshalBinary(t *testing.T) {
+	a := New(0xFF, 0xEE)
+	data, err := a.MarshalBinary()
+	require.NoError(t, err)
+	require.Equal(t, data, []byte{0, 0, 0, 0, 0, 0, 0, 0xEE, 0, 0, 0, 0, 0, 0, 0, 0xFF})
+
+	a = Random()
+	data, err = a.MarshalBinary()
+	require.NoError(t, err)
+
+	b := new(GF127)
+	err = b.UnmarshalBinary(data)
+	require.NoError(t, err)
+	require.Equal(t, a, b)
+
+	err = b.UnmarshalBinary([]byte{0, 1, 2, 3})
+	require.Error(t, err)
+}
