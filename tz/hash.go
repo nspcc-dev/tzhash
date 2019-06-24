@@ -21,7 +21,7 @@ type digest struct {
 }
 
 // type assertion
-var _ hash.Hash = new(digest)
+var _ hash.Hash = (*digest)(nil)
 
 var (
 	minmax  = [2]gf127.GF127{{0, 0}, {math.MaxUint64, math.MaxUint64}}

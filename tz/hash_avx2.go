@@ -10,7 +10,7 @@ type digest2 struct {
 	x [2]gf127.GF127x2
 }
 
-var _ hash.Hash = new(digest2)
+var _ hash.Hash = (*digest2)(nil)
 
 func (d *digest2) Write(data []byte) (n int, err error) {
 	n = len(data)
