@@ -26,6 +26,15 @@ are concatable: hash sum of data can be calculated based on hashes of chunks.
 
 The example of how it works can be seen in tests.
 
+# Benchmarks
+
+## AVX vs AVX2 version
+
+```
+BenchmarkAVX-8          300     3566248 ns/op          64 B/op          4 allocs/op
+BenchmarkAVX2-8         500     2857174 ns/op          64 B/op          2 allocs/op
+```
+
 # Contributing
 
 At this moment, we do not accept contributions. Follow us.
