@@ -75,6 +75,7 @@ func BenchmarkAVX(b *testing.B) {
 		_, _ = d.Write(data)
 		d.checkSum()
 	}
+	b.SetBytes(int64(len(data)))
 }
 
 func BenchmarkAVX2(b *testing.B) {
@@ -88,6 +89,7 @@ func BenchmarkAVX2(b *testing.B) {
 		_, _ = d.Write(data)
 		d.checkSum()
 	}
+	b.SetBytes(int64(len(data)))
 }
 
 func TestHomomorphism(t *testing.T) {
