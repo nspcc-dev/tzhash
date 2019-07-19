@@ -51,6 +51,17 @@ func TestHash(t *testing.T) {
 			require.Equal(t, tc.hash, hex.EncodeToString(sum[:]))
 		}
 	})
+
+	t.Run("test AVX2 digest with inline asm function", func(t *testing.T) {
+		d := new(digest3)
+		for _, tc := range testCases {
+			d.Reset()
+			_, _ = d.Write(tc.input)
+			sum := d.checkSum()
+
+			require.Equal(t, tc.hash, hex.EncodeToString(sum[:]))
+		}
+	})
 }
 
 func newBuffer() (data []byte) {
@@ -84,6 +95,20 @@ func BenchmarkAVX2(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 	d := new(digest2)
+	for i := 0; i < b.N; i++ {
+		d.Reset()
+		_, _ = d.Write(data)
+		d.checkSum()
+	}
+	b.SetBytes(int64(len(data)))
+}
+
+func BenchmarkAVX2Inline(b *testing.B) {
+	data := newBuffer()
+
+	b.ResetTimer()
+	b.ReportAllocs()
+	d := new(digest3)
 	for i := 0; i < b.N; i++ {
 		d.Reset()
 		_, _ = d.Write(data)
