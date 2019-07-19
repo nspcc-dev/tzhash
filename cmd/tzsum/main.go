@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"hash"
 	"io"
 	"log"
 	"os"
@@ -16,13 +17,13 @@ var (
 	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
 	memprofile = flag.String("memprofile", "", "write memory profile to `file`")
 	filename   = flag.String("name", "-", "file to use")
+	hashimpl   = flag.String("impl", "avx2inline", "implementation to use")
 )
 
 func main() {
 	var (
 		f   io.Reader
 		err error
-		h   = tz.New()
 	)
 
 	flag.Parse()
@@ -43,6 +44,18 @@ func main() {
 		}
 	} else {
 		f = os.Stdin
+	}
+
+	var h hash.Hash
+	switch *hashimpl {
+	case "avx":
+		h = tz.NewWith(tz.AVX)
+	case "avx2":
+		h = tz.NewWith(tz.AVX2)
+	case "avx2inline":
+		h = tz.NewWith(tz.AVX2Inline)
+	default:
+		h = tz.New()
 	}
 
 	if _, err := io.Copy(h, f); err != nil {

@@ -6,8 +6,8 @@
 tmpfile=$1
 
 go build ./cmd/tzsum && \
-for c in tzC tz tzbits; do
-	./tzsum -cpuprofile cpu.prof -name $tmpfile -hash $c
-	echo top | go tool pprof cpu.prof
-	echo 
+for impl in avx avx2 avx2inline; do
+	echo $impl implementation:
+	/usr/bin/env time -f "time: %e seconds" ./tzsum -name $tmpfile -impl $impl
+	echo
 done

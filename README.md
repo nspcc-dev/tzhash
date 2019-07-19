@@ -13,16 +13,16 @@ make auto
 
 # Homomorphic hashing in golang
 
-Package **tz** containts pure-Go implementation of hashing function described by Tillich and Źemor in [1] .
+Package `tz` containts pure-Go implementation of hashing function described by Tillich and Źemor in [1] .
 
-There are existing implementations already (e.g. [2]), however it is written in C.
+There are existing implementations already (e.g. [2]), however they are written in C.
 
-Package **gf127** contains arithmetic in GF(2^127) with _x^127+x^63+1_ as reduction polynomial.
+Package `gf127` contains arithmetic in `GF(2^127)` with `x^127+x^63+1` as reduction polynomial.
 
 # Description
 
 It can be used instead of Merkle-tree for data-validation, because homomorphic hashes
-are concatable: hash sum of data can be calculated based on hashes of chunks.
+are concatenable: hash sum of data can be calculated based on hashes of chunks.
 
 The example of how it works can be seen in tests.
 

@@ -1,3 +1,6 @@
+// Copyright 2019 (c) NSPCC
+//
+// This file contains AVX2 implementation.
 package tz
 
 import (
@@ -10,9 +13,10 @@ type digest2 struct {
 	x [2]gf127.GF127x2
 }
 
+// type assertion
 var _ hash.Hash = (*digest2)(nil)
 
-func NewAVX2() hash.Hash {
+func newAVX2() *digest2 {
 	d := new(digest2)
 	d.Reset()
 	return d
