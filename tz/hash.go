@@ -18,6 +18,7 @@ const (
 	AVX
 	AVX2
 	AVX2Inline
+	PureGo
 )
 
 func (impl Implementation) String() string {
@@ -28,6 +29,8 @@ func (impl Implementation) String() string {
 		return "AVX2"
 	case AVX2Inline:
 		return "AVX2Inline"
+	case PureGo:
+		return "PureGo"
 	default:
 		return "UNKNOWN"
 	}
@@ -41,6 +44,8 @@ func NewWith(impl Implementation) hash.Hash {
 		return newAVX2()
 	case AVX2Inline:
 		return newAVX2Inline()
+	case PureGo:
+		return newPure()
 	default:
 		return New()
 	}

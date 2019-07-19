@@ -15,6 +15,7 @@ var providers = []Implementation{
 	AVX,
 	AVX2,
 	AVX2Inline,
+	PureGo,
 }
 
 func TestNewWith(t *testing.T) {
@@ -26,6 +27,9 @@ func TestNewWith(t *testing.T) {
 
 	d = NewWith(AVX2Inline)
 	require.IsType(t, (*digest3)(nil), d)
+
+	d = NewWith(PureGo)
+	require.IsType(t, (*digestp)(nil), d)
 }
 
 var testCases = []struct {

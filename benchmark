@@ -6,7 +6,7 @@
 tmpfile=$1
 
 go build ./cmd/tzsum && \
-for impl in avx avx2 avx2inline; do
+for impl in avx avx2 avx2inline purego; do
 	echo $impl implementation:
 	/usr/bin/env time -f "time: %e seconds" ./tzsum -name $tmpfile -impl $impl
 	echo

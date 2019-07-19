@@ -17,7 +17,7 @@ var (
 	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
 	memprofile = flag.String("memprofile", "", "write memory profile to `file`")
 	filename   = flag.String("name", "-", "file to use")
-	hashimpl   = flag.String("impl", "avx2inline", "implementation to use")
+	hashimpl   = flag.String("impl", "", "implementation to use")
 )
 
 func main() {
@@ -54,6 +54,8 @@ func main() {
 		h = tz.NewWith(tz.AVX2)
 	case "avx2inline":
 		h = tz.NewWith(tz.AVX2Inline)
+	case "purego":
+		h = tz.NewWith(tz.PureGo)
 	default:
 		h = tz.New()
 	}
