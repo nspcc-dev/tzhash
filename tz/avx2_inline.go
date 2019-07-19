@@ -1,3 +1,7 @@
+// Copyright 2019 (c) NSPCC
+//
+// This file contains AVX2 implementation with inlined
+// assembly calls.
 package tz
 
 import (
@@ -10,9 +14,10 @@ type digest3 struct {
 	x [2]gf127.GF127x2
 }
 
+// type assertion
 var _ hash.Hash = (*digest3)(nil)
 
-func NewAVX2Inline() hash.Hash {
+func newAVX2Inline() *digest3 {
 	d := new(digest3)
 	d.Reset()
 	return d

@@ -11,6 +11,23 @@ import (
 
 const benchDataSize = 100000
 
+var providers = []Implementation{
+	AVX,
+	AVX2,
+	AVX2Inline,
+}
+
+func TestNewWith(t *testing.T) {
+	d := NewWith(AVX)
+	require.IsType(t, (*digest)(nil), d)
+
+	d = NewWith(AVX2)
+	require.IsType(t, (*digest2)(nil), d)
+
+	d = NewWith(AVX2Inline)
+	require.IsType(t, (*digest3)(nil), d)
+}
+
 var testCases = []struct {
 	input []byte
 	hash  string
@@ -30,38 +47,18 @@ var testCases = []struct {
 }
 
 func TestHash(t *testing.T) {
-	t.Run("test AVX digest", func(t *testing.T) {
-		d := new(digest)
-		for _, tc := range testCases {
-			d.Reset()
-			_, _ = d.Write(tc.input)
-			sum := d.checkSum()
-
-			require.Equal(t, tc.hash, hex.EncodeToString(sum[:]))
-		}
-	})
-
-	t.Run("test AVX2 digest", func(t *testing.T) {
-		d := new(digest2)
-		for _, tc := range testCases {
-			d.Reset()
-			_, _ = d.Write(tc.input)
-			sum := d.checkSum()
-
-			require.Equal(t, tc.hash, hex.EncodeToString(sum[:]))
-		}
-	})
-
-	t.Run("test AVX2 digest with inline asm function", func(t *testing.T) {
-		d := new(digest3)
-		for _, tc := range testCases {
-			d.Reset()
-			_, _ = d.Write(tc.input)
-			sum := d.checkSum()
-
-			require.Equal(t, tc.hash, hex.EncodeToString(sum[:]))
-		}
-	})
+	for i := range providers {
+		p := providers[i]
+		t.Run("test "+p.String()+" digest", func(t *testing.T) {
+			d := NewWith(p)
+			for _, tc := range testCases {
+				d.Reset()
+				_, _ = d.Write(tc.input)
+				sum := d.Sum(nil)
+				require.Equal(t, tc.hash, hex.EncodeToString(sum[:]))
+			}
+		})
+	}
 }
 
 func newBuffer() (data []byte) {
@@ -75,46 +72,24 @@ func newBuffer() (data []byte) {
 	return
 }
 
-func BenchmarkAVX(b *testing.B) {
+func BenchmarkSum(b *testing.B) {
 	data := newBuffer()
+	size := int64(len(data))
 
-	b.ResetTimer()
-	b.ReportAllocs()
-	d := new(digest)
-	for i := 0; i < b.N; i++ {
-		d.Reset()
-		_, _ = d.Write(data)
-		d.checkSum()
+	for i := range providers {
+		p := providers[i]
+		b.Run("bench"+p.String()+"digest", func(b *testing.B) {
+			b.ResetTimer()
+			b.ReportAllocs()
+			d := NewWith(p)
+			for i := 0; i < b.N; i++ {
+				d.Reset()
+				_, _ = d.Write(data)
+				d.Sum(nil)
+			}
+			b.SetBytes(size)
+		})
 	}
-	b.SetBytes(int64(len(data)))
-}
-
-func BenchmarkAVX2(b *testing.B) {
-	data := newBuffer()
-
-	b.ResetTimer()
-	b.ReportAllocs()
-	d := new(digest2)
-	for i := 0; i < b.N; i++ {
-		d.Reset()
-		_, _ = d.Write(data)
-		d.checkSum()
-	}
-	b.SetBytes(int64(len(data)))
-}
-
-func BenchmarkAVX2Inline(b *testing.B) {
-	data := newBuffer()
-
-	b.ResetTimer()
-	b.ReportAllocs()
-	d := new(digest3)
-	for i := 0; i < b.N; i++ {
-		d.Reset()
-		_, _ = d.Write(data)
-		d.checkSum()
-	}
-	b.SetBytes(int64(len(data)))
 }
 
 func TestHomomorphism(t *testing.T) {
@@ -189,14 +164,14 @@ func TestConcat(t *testing.T) {
 
 func TestValidate(t *testing.T) {
 	var (
-		hash []byte
-		ps   [][]byte
-		got  bool
-		err  error
+		h   []byte
+		ps  [][]byte
+		got bool
+		err error
 	)
 
 	for _, tc := range testCasesConcat {
-		hash, _ = hex.DecodeString(tc.Hash)
+		h, _ = hex.DecodeString(tc.Hash)
 		require.NoError(t, err)
 
 		ps = make([][]byte, len(tc.Parts))
@@ -205,7 +180,7 @@ func TestValidate(t *testing.T) {
 			require.NoError(t, err)
 		}
 
-		got, err = Validate(hash, ps)
+		got, err = Validate(h, ps)
 		require.NoError(t, err)
 		require.True(t, got)
 	}
