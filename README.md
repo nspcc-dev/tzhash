@@ -31,8 +31,9 @@ The example of how it works can be seen in tests.
 ## AVX vs AVX2 version
 
 ```
-BenchmarkAVX-8           500       3579980 ns/op      27.93 MB/s          64 B/op          4 allocs/op
-BenchmarkAVX2-8          500       2997518 ns/op      33.36 MB/s          64 B/op          2 allocs/op
+BenchmarkAVX-8          	     500	   3492019 ns/op	  28.64 MB/s	      64 B/op	       4 allocs/op
+BenchmarkAVX2-8         	     500	   2752693 ns/op	  36.33 MB/s	      64 B/op	       2 allocs/op
+BenchmarkAVX2Inline-8   	    1000	   1877260 ns/op	  53.27 MB/s	      64 B/op	       2 allocs/op
 ```
 
 # Contributing

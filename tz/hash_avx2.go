@@ -12,6 +12,12 @@ type digest2 struct {
 
 var _ hash.Hash = (*digest2)(nil)
 
+func NewAVX2() hash.Hash {
+	d := new(digest2)
+	d.Reset()
+	return d
+}
+
 func (d *digest2) Write(data []byte) (n int, err error) {
 	n = len(data)
 	for _, b := range data {
