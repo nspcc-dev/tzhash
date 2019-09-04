@@ -21,6 +21,12 @@ const (
 	PureGo
 )
 
+var (
+	hasAVX     bool
+	hasAVX2    bool
+	hasOSXSAVE bool
+)
+
 func (impl Implementation) String() string {
 	switch impl {
 	case AVX:
@@ -53,7 +59,13 @@ func NewWith(impl Implementation) hash.Hash {
 
 // New returns a new hash.Hash computing the Tillich-Zémor checksum.
 func New() hash.Hash {
-	return newAVX2Inline()
+	if hasAVX2 {
+		return newAVX2Inline()
+	} else if hasAVX {
+		return newAVX()
+	} else {
+		return newPure()
+	}
 }
 
 // Sum returns Tillich-Zémor checksum of data.
