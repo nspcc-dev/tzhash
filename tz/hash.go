@@ -70,9 +70,19 @@ func New() hash.Hash {
 
 // Sum returns Tillich-Zémor checksum of data.
 func Sum(data []byte) [hashSize]byte {
-	d := newAVX2Inline()
-	_, _ = d.Write(data) // no errors
-	return d.checkSum()
+	if hasAVX2 {
+		d := newAVX2Inline()
+		_, _ = d.Write(data) // no errors
+		return d.checkSum()
+	} else if hasAVX {
+		d := newAVX()
+		_, _ = d.Write(data) // no errors
+		return d.checkSum()
+	} else {
+		d := newPure()
+		_, _ = d.Write(data) // no errors
+		return d.checkSum()
+	}
 }
 
 // Concat performs combining of hashes based on homomorphic property.
