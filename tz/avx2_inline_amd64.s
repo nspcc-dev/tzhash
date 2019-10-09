@@ -1,5 +1,28 @@
 #include "textflag.h"
 
+#define mask(bit, src, tmp, to1, to2) \
+    MOVQ src, tmp \
+    SHRQ bit, tmp \
+    ANDQ $1, tmp  \
+    NEGQ tmp      \
+    MOVQ tmp, to1 \
+    VPBROADCASTB to1, to2
+
+#define mulBit(bit) \
+    VPSLLQ $1, Y0, Y1 \
+    VPALIGNR $8, Y1, Y0, Y2 \
+    VPSRLQ $63, Y2, Y2 \
+    VPXOR Y1, Y2, Y2 \
+    VPSRLQ $63, Y1, Y3 \
+    VPSLLQ $63, Y3, Y3 \
+    VPUNPCKHQDQ Y3, Y3, Y3 \
+    VPXOR Y2, Y3, Y3 \
+    mask(bit, CX, DX, X1, Y2) \
+    VPXOR Y3, Y8, Y3 \
+    VPAND Y3, Y2, Y4 \
+    VPXOR Y4, Y0, Y8 \
+    VMOVDQA Y3, Y0
+
 // func mulByteRightx2(c00c10, c01c11 *[4]uint64, b byte)
 TEXT ·mulByteRightx2(SB),NOSPLIT,$0
     MOVQ c00c10+0(FP), AX
@@ -8,179 +31,16 @@ TEXT ·mulByteRightx2(SB),NOSPLIT,$0
     VMOVDQA (BX), Y8
     MOVB b+16(FP), CX
 
-    // 1 bit
-    VPSLLQ $1, Y0, Y1
-    VPALIGNR $8, Y1, Y0, Y2
-    VPSRLQ $63, Y2, Y2
-    VPXOR Y1, Y2, Y2
-    VPSRLQ $63, Y1, Y3
-    VPSLLQ $63, Y3, Y3
-    VPUNPCKHQDQ Y3, Y3, Y3
-    VPXOR Y2, Y3, Y3
+    mulBit($7)
+    mulBit($6)
+    mulBit($5)
+    mulBit($4)
+    mulBit($3)
+    mulBit($2)
+    mulBit($1)
+    mulBit($0)
 
-    MOVQ CX, DX
-    SHRQ $7, DX
-    ANDQ $1, DX
-    NEGQ DX
-    MOVQ DX, X1
-    VPBROADCASTB X1, Y2
-
-    VPXOR Y3, Y8, Y3
-    VPAND Y3, Y2, Y4
-    VPXOR Y4, Y0, Y8
-    VMOVDQA Y3, Y0
-
-    // 2 bit
-    VPSLLQ $1, Y0, Y1
-    VPALIGNR $8, Y1, Y0, Y2
-    VPSRLQ $63, Y2, Y2
-    VPXOR Y1, Y2, Y2
-    VPSRLQ $63, Y1, Y3
-    VPSLLQ $63, Y3, Y3
-    VPUNPCKHQDQ Y3, Y3, Y3
-    VPXOR Y2, Y3, Y3
-
-    MOVQ CX, DX
-    SHRQ $6, DX
-    ANDQ $1, DX
-    NEGQ DX
-    MOVQ DX, X1
-    VPBROADCASTB X1, Y2
-
-    VPXOR Y3, Y8, Y3
-    VPAND Y3, Y2, Y4
-    VPXOR Y4, Y0, Y8
-    VMOVDQA Y3, Y0
-
-    // 3 bit
-    VPSLLQ $1, Y0, Y1
-    VPALIGNR $8, Y1, Y0, Y2
-    VPSRLQ $63, Y2, Y2
-    VPXOR Y1, Y2, Y2
-    VPSRLQ $63, Y1, Y3
-    VPSLLQ $63, Y3, Y3
-    VPUNPCKHQDQ Y3, Y3, Y3
-    VPXOR Y2, Y3, Y3
-
-    MOVQ CX, DX
-    SHRQ $5, DX
-    ANDQ $1, DX
-    NEGQ DX
-    MOVQ DX, X1
-    VPBROADCASTB X1, Y2
-
-    VPXOR Y3, Y8, Y3
-    VPAND Y3, Y2, Y4
-    VPXOR Y4, Y0, Y8
-    VMOVDQA Y3, Y0
-
-    // 4 bit
-    VPSLLQ $1, Y0, Y1
-    VPALIGNR $8, Y1, Y0, Y2
-    VPSRLQ $63, Y2, Y2
-    VPXOR Y1, Y2, Y2
-    VPSRLQ $63, Y1, Y3
-    VPSLLQ $63, Y3, Y3
-    VPUNPCKHQDQ Y3, Y3, Y3
-    VPXOR Y2, Y3, Y3
-
-    MOVQ CX, DX
-    SHRQ $4, DX
-    ANDQ $1, DX
-    NEGQ DX
-    MOVQ DX, X1
-    VPBROADCASTB X1, Y2
-
-    VPXOR Y3, Y8, Y3
-    VPAND Y3, Y2, Y4
-    VPXOR Y4, Y0, Y8
-    VMOVDQA Y3, Y0
-
-    // 5 bit
-    VPSLLQ $1, Y0, Y1
-    VPALIGNR $8, Y1, Y0, Y2
-    VPSRLQ $63, Y2, Y2
-    VPXOR Y1, Y2, Y2
-    VPSRLQ $63, Y1, Y3
-    VPSLLQ $63, Y3, Y3
-    VPUNPCKHQDQ Y3, Y3, Y3
-    VPXOR Y2, Y3, Y3
-
-    MOVQ CX, DX
-    SHRQ $3, DX
-    ANDQ $1, DX
-    NEGQ DX
-    MOVQ DX, X1
-    VPBROADCASTB X1, Y2
-
-    VPXOR Y3, Y8, Y3
-    VPAND Y3, Y2, Y4
-    VPXOR Y4, Y0, Y8
-    VMOVDQA Y3, Y0
-
-    // 6 bit
-    VPSLLQ $1, Y0, Y1
-    VPALIGNR $8, Y1, Y0, Y2
-    VPSRLQ $63, Y2, Y2
-    VPXOR Y1, Y2, Y2
-    VPSRLQ $63, Y1, Y3
-    VPSLLQ $63, Y3, Y3
-    VPUNPCKHQDQ Y3, Y3, Y3
-    VPXOR Y2, Y3, Y3
-
-    MOVQ CX, DX
-    SHRQ $2, DX
-    ANDQ $1, DX
-    NEGQ DX
-    MOVQ DX, X1
-    VPBROADCASTB X1, Y2
-
-    VPXOR Y3, Y8, Y3
-    VPAND Y3, Y2, Y4
-    VPXOR Y4, Y0, Y8
-    VMOVDQA Y3, Y0
-
-    // 7 bit
-    VPSLLQ $1, Y0, Y1
-    VPALIGNR $8, Y1, Y0, Y2
-    VPSRLQ $63, Y2, Y2
-    VPXOR Y1, Y2, Y2
-    VPSRLQ $63, Y1, Y3
-    VPSLLQ $63, Y3, Y3
-    VPUNPCKHQDQ Y3, Y3, Y3
-    VPXOR Y2, Y3, Y3
-
-    MOVQ CX, DX
-    SHRQ $1, DX
-    ANDQ $1, DX
-    NEGQ DX
-    MOVQ DX, X1
-    VPBROADCASTB X1, Y2
-
-    VPXOR Y3, Y8, Y3
-    VPAND Y3, Y2, Y4
-    VPXOR Y4, Y0, Y8
-    VMOVDQA Y3, Y0
-
-    // 8 bit
-    VPSLLQ $1, Y0, Y1
-    VPALIGNR $8, Y1, Y0, Y2
-    VPSRLQ $63, Y2, Y2
-    VPXOR Y1, Y2, Y2
-    VPSRLQ $63, Y1, Y3
-    VPSLLQ $63, Y3, Y3
-    VPUNPCKHQDQ Y3, Y3, Y3
-    VPXOR Y2, Y3, Y3
-
-    MOVQ CX, DX
-    ANDQ $1, DX
-    NEGQ DX
-    MOVQ DX, X1
-    VPBROADCASTB X1, Y2
-
-    VPXOR Y3, Y8, Y3
-    VPAND Y3, Y2, Y4
-    VPXOR Y4, Y0, Y8
     VMOVDQA Y8, (BX)
-    VMOVDQA Y3, (AX)
+    VMOVDQA Y0, (AX)
+
     RET
