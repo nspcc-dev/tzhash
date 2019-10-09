@@ -36,7 +36,7 @@ const (
 	bitAVX2    = 1 << 5
 )
 
-func init() {
+func setFeatures() {
 	maxID, _, _, _ := cpuid(0, 0)
 	if maxID < 1 {
 		return
