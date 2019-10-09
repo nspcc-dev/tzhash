@@ -24,8 +24,10 @@ const (
 )
 
 var (
-	hasAVX  = cpuid.HasAVX()
-	hasAVX2 = cpuid.HasAVX2()
+	hasAVX = cpuid.HasAVX()
+	// Having AVX2 does not guarantee
+	// that AVX is also present.
+	hasAVX2 = cpuid.HasAVX2() && hasAVX
 )
 
 func (impl Implementation) String() string {
