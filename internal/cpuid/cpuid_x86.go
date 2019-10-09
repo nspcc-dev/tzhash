@@ -28,7 +28,7 @@
 
 // +build 386 amd64 amd64p32
 
-package tz
+package cpuid
 
 const (
 	bitOSXSAVE = 1 << 27
@@ -36,14 +36,19 @@ const (
 	bitAVX2    = 1 << 5
 )
 
-func setFeatures() {
+var (
+	hasAVX  bool
+	hasAVX2 bool
+)
+
+func init() {
 	maxID, _, _, _ := cpuid(0, 0)
 	if maxID < 1 {
 		return
 	}
 
 	_, _, ecx1, _ := cpuid(1, 0)
-	hasOSXSAVE = isSet(ecx1, bitOSXSAVE)
+	hasOSXSAVE := isSet(ecx1, bitOSXSAVE)
 
 	osSupportsAVX := false
 	if hasOSXSAVE {
@@ -60,6 +65,9 @@ func setFeatures() {
 	_, ebx7, _, _ := cpuid(7, 0)
 	hasAVX2 = isSet(ebx7, bitAVX2) && osSupportsAVX
 }
+
+func HasAVX() bool  { return hasAVX }
+func HasAVX2() bool { return hasAVX2 }
 
 func isSet(hwc uint32, value uint32) bool {
 	return hwc&value != 0

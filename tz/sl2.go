@@ -17,8 +17,6 @@ var id = sl2{
 var mul func(a, b, c *sl2, x *[4]gf127.GF127)
 
 func init() {
-	setFeatures()
-
 	if hasAVX {
 		mul = mulSL2AVX
 	} else {

@@ -6,6 +6,8 @@ package tz
 import (
 	"errors"
 	"hash"
+
+	"github.com/nspcc-dev/tzhash/internal/cpuid"
 )
 
 type Implementation int
@@ -22,9 +24,8 @@ const (
 )
 
 var (
-	hasAVX     bool
-	hasAVX2    bool
-	hasOSXSAVE bool
+	hasAVX  = cpuid.HasAVX()
+	hasAVX2 = cpuid.HasAVX2()
 )
 
 func (impl Implementation) String() string {
