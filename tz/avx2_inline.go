@@ -38,8 +38,8 @@ func (d *digest3) Sum(in []byte) []byte {
 	return append(in, h[:]...)
 }
 func (d *digest3) Reset() {
-	d.x[0] = gf127.GF127x2{1, 0, 0, 0}
-	d.x[1] = gf127.GF127x2{0, 0, 1, 0}
+	d.x[0] = gf127.GF127x2{gf127.GF127{1, 0}, gf127.GF127{0, 0}}
+	d.x[1] = gf127.GF127x2{gf127.GF127{0, 0}, gf127.GF127{1, 0}}
 }
 func (d *digest3) Size() int      { return hashSize }
 func (d *digest3) BlockSize() int { return hashBlockSize }

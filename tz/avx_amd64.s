@@ -1,5 +1,17 @@
 #include "textflag.h"
 
+// mul2 multiplicates FROM by 2, stores result in R1
+// and uses R1, R2 and R3 for internal computations.
+#define mul2(FROM, TO, R2, R3) \
+    VPSLLQ $1, FROM, TO \
+    VPALIGNR $8, TO, FROM, R2 \
+    PSRLQ $63, R2 \
+    MOVUPD ·x127x63(SB), R3 \
+    ANDPD TO, R3 \
+    VPUNPCKHQDQ R3, R3, R3 \
+    XORPD R2, TO \
+    XORPD R3, TO
+
 // func mulBitRight(c00, c01, c10, c11, e *[2]uint64)
 TEXT ·mulBitRight(SB),NOSPLIT,$0
     MOVQ c00+0(FP), AX
@@ -14,14 +26,7 @@ TEXT ·mulBitRight(SB),NOSPLIT,$0
     MOVUPD (DX), X3
 
     // c00 *= 2
-    VPSLLQ $1, X0, X5
-    VPALIGNR $8, X5, X0, X6
-    PSRLQ $63, X6
-    MOVUPD ·x127x63(SB), X7
-    ANDPD X5, X7
-    VPUNPCKHQDQ X7, X7, X7
-    XORPD X6, X5
-    XORPD X7, X5
+    mul2(X0, X5, X6, X7)
     MOVUPD X5, X0
 
     // c00 += c01
@@ -29,14 +34,7 @@ TEXT ·mulBitRight(SB),NOSPLIT,$0
     MOVUPD X0, (AX)
 
     // c10 *= 2
-    VPSLLQ $1, X2, X5
-    VPALIGNR $8, X5, X2, X6
-    PSRLQ $63, X6
-    MOVUPD ·x127x63(SB), X7
-    ANDPD X5, X7
-    VPUNPCKHQDQ X7, X7, X7
-    XORPD X6, X5
-    XORPD X7, X5
+    mul2(X2, X5, X6, X7)
     MOVUPD X5, X2
 
     // c10 += c11
