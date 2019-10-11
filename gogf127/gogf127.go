@@ -160,33 +160,22 @@ func Add(a, b, c *GF127) {
 }
 
 // Mul sets c to a*b.
-// TODO make it work in-place without allocations
-// TODO optimization: no need to perform shift by i every time, cache results
 func Mul(a, b, c *GF127) {
 	r := new(GF127)
-	d := new(GF127)
+	d := *a
 	for i := uint(0); i < 64; i++ {
 		if b[0]&(1<<i) != 0 {
-			shl(i, a, d)
-			Add(r, d, r)
+			Add(r, &d, r)
 		}
+		Mul10(&d, &d)
 	}
 	for i := uint(0); i < 63; i++ {
 		if b[1]&(1<<i) != 0 {
-			shl(i+64, a, d)
-			Add(r, d, r)
+			Add(r, &d, r)
 		}
+		Mul10(&d, &d)
 	}
 	*c = *r
-}
-
-// shl performs left shift by consecutive multiplications by 2.
-func shl(count uint, a, b *GF127) {
-	b[0] = a[0]
-	b[1] = a[1]
-	for i := uint(0); i < count; i++ {
-		Mul10(b, b)
-	}
 }
 
 // Mul10 sets b to a*x.

@@ -38,6 +38,21 @@ func TestMul(t *testing.T) {
 	}
 }
 
+func TestMulInPlace(t *testing.T) {
+	for _, tc := range testCasesMul {
+		a := *tc[0]
+		b := *tc[1]
+		Mul(&a, &b, &b)
+		require.Equal(t, a, *tc[0])
+		require.Equal(t, b, *tc[2])
+
+		b = *tc[1]
+		Mul(&a, &b, &a)
+		require.Equal(t, b, *tc[1])
+		require.Equal(t, a, *tc[2])
+	}
+}
+
 var testCasesMul10 = [][2]*GF127{
 	{&GF127{123, 0}, &GF127{246, 0}},
 	{&GF127{maxUint64, 2}, &GF127{maxUint64 - 1, 5}},
