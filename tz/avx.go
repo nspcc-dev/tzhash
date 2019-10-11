@@ -57,14 +57,15 @@ func (d *digest) Reset() {
 func (d *digest) Write(data []byte) (n int, err error) {
 	n = len(data)
 	for _, b := range data {
-		mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>7)&1])
-		mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>6)&1])
-		mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>5)&1])
-		mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>4)&1])
-		mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>3)&1])
-		mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>2)&1])
-		mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>1)&1])
-		mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>0)&1])
+		mulByteRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], b)
+		// mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>7)&1])
+		// mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>6)&1])
+		// mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>5)&1])
+		// mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>4)&1])
+		// mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>3)&1])
+		// mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>2)&1])
+		// mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>1)&1])
+		// mulBitRight(&d.x[0], &d.x[1], &d.x[2], &d.x[3], &minmax[(b>>0)&1])
 	}
 	return
 }
@@ -78,3 +79,5 @@ func (d *digest) BlockSize() int {
 }
 
 func mulBitRight(c00, c01, c10, c11, e *gf127.GF127)
+
+func mulByteRight(c00, c01, c10, c11 *gf127.GF127, b byte)
