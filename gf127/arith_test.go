@@ -1,12 +1,10 @@
-package gogf127
+package gf127
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
-
-const maxUint64 = ^uint64(0)
 
 func TestAdd(t *testing.T) {
 	var (

@@ -1,8 +1,9 @@
-package gf127
+package avx
 
 import (
 	"testing"
 
+	"github.com/nspcc-dev/tzhash/gf127"
 	"github.com/stretchr/testify/require"
 )
 
@@ -10,12 +11,12 @@ const maxUint64 = ^uint64(0)
 
 func TestAdd(t *testing.T) {
 	var (
-		a = Random()
-		b = Random()
+		a = gf127.Random()
+		b = gf127.Random()
 		e = &GF127{a[0] ^ b[0], a[1] ^ b[1]}
 		c = new(GF127)
 	)
-	c.Add(a, b)
+	Add(a, b, c)
 	require.Equal(t, e, c)
 }
 
@@ -81,30 +82,11 @@ func TestInv(t *testing.T) {
 
 	for i := 0; i < 3; i++ {
 		// 0 has no inverse
-		if a = Random(); a.Equals(&GF127{0, 0}) {
+		if a = gf127.Random(); a.Equals(&GF127{0, 0}) {
 			continue
 		}
 		Inv(a, b)
 		Mul(a, b, c)
 		require.Equal(t, &GF127{1, 0}, c)
 	}
-}
-
-func TestGF127_MarshalBinary(t *testing.T) {
-	a := New(0xFF, 0xEE)
-	data, err := a.MarshalBinary()
-	require.NoError(t, err)
-	require.Equal(t, data, []byte{0, 0, 0, 0, 0, 0, 0, 0xEE, 0, 0, 0, 0, 0, 0, 0, 0xFF})
-
-	a = Random()
-	data, err = a.MarshalBinary()
-	require.NoError(t, err)
-
-	b := new(GF127)
-	err = b.UnmarshalBinary(data)
-	require.NoError(t, err)
-	require.Equal(t, a, b)
-
-	err = b.UnmarshalBinary([]byte{0, 1, 2, 3})
-	require.Error(t, err)
 }
