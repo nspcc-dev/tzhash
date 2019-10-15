@@ -5,7 +5,7 @@ import (
 )
 
 type digestp struct {
-	x [4]gf127.GF127
+	x [4]GF127
 }
 
 // New returns a new hash.Hash computing the Tillich-Zémor checksum.
@@ -35,15 +35,15 @@ func (d *digestp) byteArray() (b [hashSize]byte) {
 }
 
 func (d *digestp) Reset() {
-	d.x[0] = gf127.GF127{1, 0}
-	d.x[1] = gf127.GF127{0, 0}
-	d.x[2] = gf127.GF127{0, 0}
-	d.x[3] = gf127.GF127{1, 0}
+	d.x[0] = GF127{1, 0}
+	d.x[1] = GF127{0, 0}
+	d.x[2] = GF127{0, 0}
+	d.x[3] = GF127{1, 0}
 }
 
 func (d *digestp) Write(data []byte) (n int, err error) {
 	n = len(data)
-	tmp := new(gf127.GF127)
+	tmp := new(GF127)
 	for _, b := range data {
 		mulBitRightPure(&d.x[0], &d.x[1], &d.x[2], &d.x[3], b&0x80 != 0, tmp)
 		mulBitRightPure(&d.x[0], &d.x[1], &d.x[2], &d.x[3], b&0x40 != 0, tmp)
@@ -65,7 +65,7 @@ func (d *digestp) BlockSize() int {
 	return hashBlockSize
 }
 
-func mulBitRightPure(c00, c01, c10, c11 *gf127.GF127, bit bool, tmp *gf127.GF127) {
+func mulBitRightPure(c00, c01, c10, c11 *GF127, bit bool, tmp *GF127) {
 	if bit {
 		*tmp = *c00
 		gf127.Mul10(c00, c00)

@@ -6,20 +6,18 @@ package tz
 import (
 	"hash"
 	"math"
-
-	"github.com/nspcc-dev/tzhash/gf127"
 )
 
 type digest struct {
-	x [4]gf127.GF127
+	x [4]GF127
 }
 
 // type assertion
 var _ hash.Hash = (*digest)(nil)
 
 var (
-	minmax  = [2]gf127.GF127{{0, 0}, {math.MaxUint64, math.MaxUint64}}
-	x127x63 = gf127.GF127{1 << 63, 1 << 63}
+	minmax  = [2]GF127{{0, 0}, {math.MaxUint64, math.MaxUint64}}
+	x127x63 = GF127{1 << 63, 1 << 63}
 )
 
 func newAVX() *digest {
@@ -48,10 +46,10 @@ func (d *digest) byteArray() (b [hashSize]byte) {
 }
 
 func (d *digest) Reset() {
-	d.x[0] = gf127.GF127{1, 0}
-	d.x[1] = gf127.GF127{0, 0}
-	d.x[2] = gf127.GF127{0, 0}
-	d.x[3] = gf127.GF127{1, 0}
+	d.x[0] = GF127{1, 0}
+	d.x[1] = GF127{0, 0}
+	d.x[2] = GF127{0, 0}
+	d.x[3] = GF127{1, 0}
 }
 
 func (d *digest) Write(data []byte) (n int, err error) {
@@ -77,4 +75,4 @@ func (d *digest) BlockSize() int {
 	return hashBlockSize
 }
 
-func mulBitRight(c00, c01, c10, c11, e *gf127.GF127)
+func mulBitRight(c00, c01, c10, c11, e *GF127)

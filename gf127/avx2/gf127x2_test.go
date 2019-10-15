@@ -3,7 +3,6 @@ package avx2
 import (
 	"testing"
 
-	"github.com/nspcc-dev/tzhash/gf127"
 	"github.com/stretchr/testify/require"
 )
 
@@ -11,11 +10,11 @@ const maxUint64 = ^uint64(0)
 
 var testCasesSplit = []struct {
 	num *GF127x2
-	h1  *gf127.GF127
-	h2  *gf127.GF127
+	h1  *GF127
+	h2  *GF127
 }{
-	{&GF127x2{gf127.GF127{123, 31}, gf127.GF127{141, 9}}, &gf127.GF127{123, 31}, &gf127.GF127{141, 9}},
-	{&GF127x2{gf127.GF127{maxUint64, 0}, gf127.GF127{0, maxUint64}}, &gf127.GF127{maxUint64, 0}, &gf127.GF127{0, maxUint64}},
+	{&GF127x2{GF127{123, 31}, GF127{141, 9}}, &GF127{123, 31}, &GF127{141, 9}},
+	{&GF127x2{GF127{maxUint64, 0}, GF127{0, maxUint64}}, &GF127{maxUint64, 0}, &GF127{0, maxUint64}},
 }
 
 func TestSplit(t *testing.T) {
@@ -36,16 +35,16 @@ func TestCombineTo(t *testing.T) {
 
 var testCasesMul10x2 = [][2]*GF127x2{
 	{
-		&GF127x2{gf127.GF127{123, 0}, gf127.GF127{123, 0}},
-		&GF127x2{gf127.GF127{246, 0}, gf127.GF127{246, 0}},
+		&GF127x2{GF127{123, 0}, GF127{123, 0}},
+		&GF127x2{GF127{246, 0}, GF127{246, 0}},
 	},
 	{
-		&GF127x2{gf127.GF127{maxUint64, 2}, gf127.GF127{0, 1}},
-		&GF127x2{gf127.GF127{maxUint64 - 1, 5}, gf127.GF127{0, 2}},
+		&GF127x2{GF127{maxUint64, 2}, GF127{0, 1}},
+		&GF127x2{GF127{maxUint64 - 1, 5}, GF127{0, 2}},
 	},
 	{
-		&GF127x2{gf127.GF127{0, maxUint64 >> 1}, gf127.GF127{maxUint64, 2}},
-		&GF127x2{gf127.GF127{1 + 1<<63, maxUint64>>1 - 1}, gf127.GF127{maxUint64 - 1, 5}},
+		&GF127x2{GF127{0, maxUint64 >> 1}, GF127{maxUint64, 2}},
+		&GF127x2{GF127{1 + 1<<63, maxUint64>>1 - 1}, GF127{maxUint64 - 1, 5}},
 	},
 }
 
@@ -59,16 +58,16 @@ func TestMul10x2(t *testing.T) {
 
 var testCasesMul11x2 = [][2]*GF127x2{
 	{
-		&GF127x2{gf127.GF127{123, 0}, gf127.GF127{123, 0}},
-		&GF127x2{gf127.GF127{141, 0}, gf127.GF127{141, 0}},
+		&GF127x2{GF127{123, 0}, GF127{123, 0}},
+		&GF127x2{GF127{141, 0}, GF127{141, 0}},
 	},
 	{
-		&GF127x2{gf127.GF127{maxUint64, 2}, gf127.GF127{0, 1}},
-		&GF127x2{gf127.GF127{1, 7}, gf127.GF127{0, 3}},
+		&GF127x2{GF127{maxUint64, 2}, GF127{0, 1}},
+		&GF127x2{GF127{1, 7}, GF127{0, 3}},
 	},
 	{
-		&GF127x2{gf127.GF127{0, maxUint64 >> 1}, gf127.GF127{maxUint64, 2}},
-		&GF127x2{gf127.GF127{1 + 1<<63, 1}, gf127.GF127{1, 7}},
+		&GF127x2{GF127{0, maxUint64 >> 1}, GF127{maxUint64, 2}},
+		&GF127x2{GF127{1 + 1<<63, 1}, GF127{1, 7}},
 	},
 }
 

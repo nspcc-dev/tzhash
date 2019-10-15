@@ -7,16 +7,19 @@ import (
 	"github.com/nspcc-dev/tzhash/gf127"
 )
 
+// GF127 is an alias for a main type.
+type GF127 = gf127.GF127
+
 // GF127x2 represents a pair of elements of GF(2^127) stored together.
-type GF127x2 [2]gf127.GF127
+type GF127x2 [2]GF127
 
 // Split returns 2 components of pair without additional allocations.
-func Split(a *GF127x2) (*gf127.GF127, *gf127.GF127) {
+func Split(a *GF127x2) (*GF127, *GF127) {
 	return &a[0], &a[1]
 }
 
 // CombineTo 2 elements of GF(2^127) to the respective components of pair.
-func CombineTo(a *gf127.GF127, b *gf127.GF127, c *GF127x2) {
+func CombineTo(a *GF127, b *GF127, c *GF127x2) {
 	c[0] = *a
 	c[1] = *b
 }

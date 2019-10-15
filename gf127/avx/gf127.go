@@ -13,6 +13,7 @@ import (
 	"github.com/nspcc-dev/tzhash/gf127"
 )
 
+// GF127 is an alias for a main type.
 type GF127 = gf127.GF127
 
 const msb64 = uint64(1) << 63

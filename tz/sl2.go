@@ -7,14 +7,18 @@ import (
 	"github.com/nspcc-dev/tzhash/gf127/avx"
 )
 
-type sl2 [2][2]gf127.GF127
+type (
+	GF127 = gf127.GF127
+
+	sl2 [2][2]GF127
+)
 
 var id = sl2{
-	{gf127.GF127{1, 0}, gf127.GF127{0, 0}},
-	{gf127.GF127{0, 0}, gf127.GF127{1, 0}},
+	{GF127{1, 0}, GF127{0, 0}},
+	{GF127{0, 0}, GF127{1, 0}},
 }
 
-var mul func(a, b, c *sl2, x *[4]gf127.GF127)
+var mul func(a, b, c *sl2, x *[4]GF127)
 
 func init() {
 	if hasAVX {
@@ -50,7 +54,7 @@ func (c *sl2) UnmarshalBinary(data []byte) (err error) {
 	return
 }
 
-func (c *sl2) mulStrassen(a, b *sl2, x *[8]gf127.GF127) *sl2 {
+func (c *sl2) mulStrassen(a, b *sl2, x *[8]GF127) *sl2 {
 	// strassen algorithm
 	avx.Add(&a[0][0], &a[1][1], &x[0])
 	avx.Add(&b[0][0], &b[1][1], &x[1])
@@ -90,7 +94,7 @@ func (c *sl2) mulStrassen(a, b *sl2, x *[8]gf127.GF127) *sl2 {
 	return c
 }
 
-func mulSL2AVX(a, b, c *sl2, x *[4]gf127.GF127) {
+func mulSL2AVX(a, b, c *sl2, x *[4]GF127) {
 	avx.Mul(&a[0][0], &b[0][0], &x[0])
 	avx.Mul(&a[0][0], &b[0][1], &x[1])
 	avx.Mul(&a[1][0], &b[0][0], &x[2])
@@ -106,24 +110,24 @@ func mulSL2AVX(a, b, c *sl2, x *[4]gf127.GF127) {
 	avx.Add(&c[1][1], &x[3], &c[1][1])
 }
 
-func mulSL2Pure(a, b, c *sl2, x *[4]gf127.GF127) {
-	gf127.Mul((*gf127.GF127)(&a[0][0]), (*gf127.GF127)(&b[0][0]), (*gf127.GF127)(&x[0]))
-	gf127.Mul((*gf127.GF127)(&a[0][0]), (*gf127.GF127)(&b[0][1]), (*gf127.GF127)(&x[1]))
-	gf127.Mul((*gf127.GF127)(&a[1][0]), (*gf127.GF127)(&b[0][0]), (*gf127.GF127)(&x[2]))
-	gf127.Mul((*gf127.GF127)(&a[1][0]), (*gf127.GF127)(&b[0][1]), (*gf127.GF127)(&x[3]))
+func mulSL2Pure(a, b, c *sl2, x *[4]GF127) {
+	gf127.Mul((*GF127)(&a[0][0]), (*GF127)(&b[0][0]), (*GF127)(&x[0]))
+	gf127.Mul((*GF127)(&a[0][0]), (*GF127)(&b[0][1]), (*GF127)(&x[1]))
+	gf127.Mul((*GF127)(&a[1][0]), (*GF127)(&b[0][0]), (*GF127)(&x[2]))
+	gf127.Mul((*GF127)(&a[1][0]), (*GF127)(&b[0][1]), (*GF127)(&x[3]))
 
-	gf127.Mul((*gf127.GF127)(&a[0][1]), (*gf127.GF127)(&b[1][0]), (*gf127.GF127)(&c[0][0]))
-	gf127.Add((*gf127.GF127)(&c[0][0]), (*gf127.GF127)(&x[0]), (*gf127.GF127)(&c[0][0]))
-	gf127.Mul((*gf127.GF127)(&a[0][1]), (*gf127.GF127)(&b[1][1]), (*gf127.GF127)(&c[0][1]))
-	gf127.Add((*gf127.GF127)(&c[0][1]), (*gf127.GF127)(&x[1]), (*gf127.GF127)(&c[0][1]))
-	gf127.Mul((*gf127.GF127)(&a[1][1]), (*gf127.GF127)(&b[1][0]), (*gf127.GF127)(&c[1][0]))
-	gf127.Add((*gf127.GF127)(&c[1][0]), (*gf127.GF127)(&x[2]), (*gf127.GF127)(&c[1][0]))
-	gf127.Mul((*gf127.GF127)(&a[1][1]), (*gf127.GF127)(&b[1][1]), (*gf127.GF127)(&c[1][1]))
-	gf127.Add((*gf127.GF127)(&c[1][1]), (*gf127.GF127)(&x[3]), (*gf127.GF127)(&c[1][1]))
+	gf127.Mul((*GF127)(&a[0][1]), (*GF127)(&b[1][0]), (*GF127)(&c[0][0]))
+	gf127.Add((*GF127)(&c[0][0]), (*GF127)(&x[0]), (*GF127)(&c[0][0]))
+	gf127.Mul((*GF127)(&a[0][1]), (*GF127)(&b[1][1]), (*GF127)(&c[0][1]))
+	gf127.Add((*GF127)(&c[0][1]), (*GF127)(&x[1]), (*GF127)(&c[0][1]))
+	gf127.Mul((*GF127)(&a[1][1]), (*GF127)(&b[1][0]), (*GF127)(&c[1][0]))
+	gf127.Add((*GF127)(&c[1][0]), (*GF127)(&x[2]), (*GF127)(&c[1][0]))
+	gf127.Mul((*GF127)(&a[1][1]), (*GF127)(&b[1][1]), (*GF127)(&c[1][1]))
+	gf127.Add((*GF127)(&c[1][1]), (*GF127)(&x[3]), (*GF127)(&c[1][1]))
 }
 
 func (c *sl2) MulA() *sl2 {
-	var a gf127.GF127
+	var a GF127
 
 	avx.Mul10(&c[0][0], &a)
 	avx.Mul1(&c[0][0], &c[0][1])
@@ -137,7 +141,7 @@ func (c *sl2) MulA() *sl2 {
 }
 
 func (c *sl2) MulB() *sl2 {
-	var a gf127.GF127
+	var a GF127
 
 	avx.Mul1(&c[0][0], &a)
 	avx.Mul10(&c[0][0], &c[0][0])
@@ -153,18 +157,18 @@ func (c *sl2) MulB() *sl2 {
 }
 
 func (c *sl2) Mul(a, b *sl2) *sl2 {
-	mul(a, b, c, new([4]gf127.GF127))
+	mul(a, b, c, new([4]GF127))
 	return c
 }
 
 // Inv returns inverse of a in GL_2(GF(2^127))
 func Inv(a *sl2) (b *sl2) {
 	b = new(sl2)
-	inv(a, b, new([2]gf127.GF127))
+	inv(a, b, new([2]GF127))
 	return
 }
 
-func inv(a, b *sl2, t *[2]gf127.GF127) {
+func inv(a, b *sl2, t *[2]GF127) {
 	avx.Mul(&a[0][0], &a[1][1], &t[0])
 	avx.Mul(&a[0][1], &a[1][0], &t[1])
 	avx.Add(&t[0], &t[1], &t[0])

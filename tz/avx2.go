@@ -6,7 +6,6 @@ package tz
 import (
 	"hash"
 
-	"github.com/nspcc-dev/tzhash/gf127"
 	"github.com/nspcc-dev/tzhash/gf127/avx2"
 )
 
@@ -45,8 +44,8 @@ func (d *digest2) Sum(in []byte) []byte {
 	return append(in, h[:]...)
 }
 func (d *digest2) Reset() {
-	d.x[0] = avx2.GF127x2{gf127.GF127{1, 0}, gf127.GF127{0, 0}}
-	d.x[1] = avx2.GF127x2{gf127.GF127{0, 0}, gf127.GF127{1, 0}}
+	d.x[0] = avx2.GF127x2{GF127{1, 0}, GF127{0, 0}}
+	d.x[1] = avx2.GF127x2{GF127{0, 0}, GF127{1, 0}}
 }
 func (d *digest2) Size() int      { return hashSize }
 func (d *digest2) BlockSize() int { return hashBlockSize }
@@ -63,4 +62,4 @@ func (d *digest2) checkSum() (b [hashSize]byte) {
 	return
 }
 
-func mulBitRightx2(c00c10 *avx2.GF127x2, c01c11 *avx2.GF127x2, e *gf127.GF127)
+func mulBitRightx2(c00c10 *avx2.GF127x2, c01c11 *avx2.GF127x2, e *GF127)
