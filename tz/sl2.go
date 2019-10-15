@@ -130,11 +130,11 @@ func (c *sl2) MulA() *sl2 {
 	var a GF127
 
 	avx.Mul10(&c[0][0], &a)
-	avx.Mul1(&c[0][0], &c[0][1])
+	gf127.Mul1(&c[0][0], &c[0][1])
 	avx.Add(&a, &c[0][1], &c[0][0])
 
 	avx.Mul10(&c[1][0], &a)
-	avx.Mul1(&c[1][0], &c[1][1])
+	gf127.Mul1(&c[1][0], &c[1][1])
 	avx.Add(&a, &c[1][1], &c[1][0])
 
 	return c
@@ -143,12 +143,12 @@ func (c *sl2) MulA() *sl2 {
 func (c *sl2) MulB() *sl2 {
 	var a GF127
 
-	avx.Mul1(&c[0][0], &a)
+	gf127.Mul1(&c[0][0], &a)
 	avx.Mul10(&c[0][0], &c[0][0])
 	avx.Add(&c[0][1], &c[0][0], &c[0][0])
 	avx.Add(&c[0][0], &a, &c[0][1])
 
-	avx.Mul1(&c[1][0], &a)
+	gf127.Mul1(&c[1][0], &a)
 	avx.Mul10(&c[1][0], &c[1][0])
 	avx.Add(&c[1][1], &c[1][0], &c[1][0])
 	avx.Add(&c[1][0], &a, &c[1][1])
@@ -172,7 +172,7 @@ func inv(a, b *sl2, t *[2]GF127) {
 	avx.Mul(&a[0][0], &a[1][1], &t[0])
 	avx.Mul(&a[0][1], &a[1][0], &t[1])
 	avx.Add(&t[0], &t[1], &t[0])
-	avx.Inv(&t[0], &t[1])
+	gf127.Inv(&t[0], &t[1])
 
 	avx.Mul(&t[1], &a[0][0], &b[1][1])
 	avx.Mul(&t[1], &a[0][1], &b[0][1])

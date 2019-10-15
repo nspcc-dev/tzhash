@@ -26,7 +26,7 @@ func random() (a *sl2) {
 	avx.Add(&a[1][1], gf127.New(1, 0), &a[1][1])
 
 	t := gf127.New(0, 0)
-	avx.Inv(&a[0][0], t)
+	gf127.Inv(&a[0][0], t)
 	avx.Mul(t, &a[1][1], &a[1][1])
 
 	return

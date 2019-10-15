@@ -66,27 +66,3 @@ func TestMul11(t *testing.T) {
 		require.Equal(t, tc[1], c)
 	}
 }
-
-var testCasesInv = [][2]*GF127{
-	{&GF127{1, 0}, &GF127{1, 0}},
-	{&GF127{3, 0}, &GF127{msb64, ^msb64}},
-	{&GF127{54321, 12345}, &GF127{8230555108620784737, 3929873967650665114}},
-}
-
-func TestInv(t *testing.T) {
-	var a, b, c = new(GF127), new(GF127), new(GF127)
-	for _, tc := range testCasesInv {
-		Inv(tc[0], c)
-		require.Equal(t, tc[1], c)
-	}
-
-	for i := 0; i < 3; i++ {
-		// 0 has no inverse
-		if a = gf127.Random(); a.Equals(&GF127{0, 0}) {
-			continue
-		}
-		Inv(a, b)
-		Mul(a, b, c)
-		require.Equal(t, &GF127{1, 0}, c)
-	}
-}
