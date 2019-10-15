@@ -13,6 +13,7 @@ const benchDataSize = 100000
 
 var providers = []Implementation{
 	AVX,
+	AVXInline,
 	AVX2,
 	AVX2Inline,
 	PureGo,
@@ -21,6 +22,9 @@ var providers = []Implementation{
 func TestNewWith(t *testing.T) {
 	d := NewWith(AVX)
 	require.IsType(t, (*digest)(nil), d)
+
+	d = NewWith(AVXInline)
+	require.IsType(t, (*digest4)(nil), d)
 
 	d = NewWith(AVX2)
 	require.IsType(t, (*digest2)(nil), d)

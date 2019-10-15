@@ -21,6 +21,7 @@ const (
 	AVX2
 	AVX2Inline
 	PureGo
+	AVXInline
 )
 
 var (
@@ -34,6 +35,8 @@ func (impl Implementation) String() string {
 	switch impl {
 	case AVX:
 		return "AVX"
+	case AVXInline:
+		return "AVXInline"
 	case AVX2:
 		return "AVX2"
 	case AVX2Inline:
@@ -49,6 +52,8 @@ func NewWith(impl Implementation) hash.Hash {
 	switch impl {
 	case AVX:
 		return newAVX()
+	case AVXInline:
+		return newAVXInline()
 	case AVX2:
 		return newAVX2()
 	case AVX2Inline:
