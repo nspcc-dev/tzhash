@@ -1,10 +1,12 @@
-package gf127
+package avx2
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
+
+const maxUint64 = ^uint64(0)
 
 var testCasesSplit = []struct {
 	num *GF127x2

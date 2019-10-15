@@ -1,9 +1,14 @@
-package gf127
+package avx2
 
 import (
 	"encoding/binary"
 	"encoding/hex"
+
+	"github.com/nspcc-dev/tzhash/gf127"
 )
+
+// GF127 is an alias for a main type.
+type GF127 = gf127.GF127
 
 // GF127x2 represents a pair of elements of GF(2^127) stored together.
 type GF127x2 [2]GF127

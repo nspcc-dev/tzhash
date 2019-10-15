@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/nspcc-dev/tzhash/gf127"
+	"github.com/nspcc-dev/tzhash/gf127/avx"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,12 +22,12 @@ func random() (a *sl2) {
 
 	// so that result is in SL2
 	// d = a^-1*(1+b*c)
-	gf127.Mul(&a[0][1], &a[1][0], &a[1][1])
-	gf127.Add(&a[1][1], gf127.New(1, 0), &a[1][1])
+	avx.Mul(&a[0][1], &a[1][0], &a[1][1])
+	avx.Add(&a[1][1], gf127.New(1, 0), &a[1][1])
 
 	t := gf127.New(0, 0)
 	gf127.Inv(&a[0][0], t)
-	gf127.Mul(t, &a[1][1], &a[1][1])
+	avx.Mul(t, &a[1][1], &a[1][1])
 
 	return
 }
