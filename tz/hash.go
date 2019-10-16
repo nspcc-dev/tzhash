@@ -70,7 +70,7 @@ func New() hash.Hash {
 	if hasAVX2 {
 		return newAVX2Inline()
 	} else if hasAVX {
-		return newAVX()
+		return newAVXInline()
 	} else {
 		return newPure()
 	}
@@ -83,7 +83,7 @@ func Sum(data []byte) [hashSize]byte {
 		_, _ = d.Write(data) // no errors
 		return d.checkSum()
 	} else if hasAVX {
-		d := newAVX()
+		d := newAVXInline()
 		_, _ = d.Write(data) // no errors
 		return d.checkSum()
 	} else {
