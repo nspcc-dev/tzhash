@@ -57,7 +57,7 @@ var testCases = []struct {
 func TestHash(t *testing.T) {
 	for i := range providers {
 		p := providers[i]
-		t.Run("test "+p.String()+" digest", func(t *testing.T) {
+		t.Run(p.String()+" digest", func(t *testing.T) {
 			d := NewWith(p)
 			for _, tc := range testCases {
 				d.Reset()
@@ -86,7 +86,7 @@ func BenchmarkSum(b *testing.B) {
 
 	for i := range providers {
 		p := providers[i]
-		b.Run("bench"+p.String()+"digest", func(b *testing.B) {
+		b.Run(p.String()+" digest", func(b *testing.B) {
 			b.ResetTimer()
 			b.ReportAllocs()
 			d := NewWith(p)

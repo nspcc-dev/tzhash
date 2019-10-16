@@ -28,12 +28,14 @@ The example of how it works can be seen in tests.
 
 # Benchmarks
 
-## AVX vs AVX2 version
+## go vs AVX vs AVX2 version
 
 ```
-BenchmarkAVX-8          	     500	   3492019 ns/op	  28.64 MB/s	      64 B/op	       4 allocs/op
-BenchmarkAVX2-8         	     500	   2752693 ns/op	  36.33 MB/s	      64 B/op	       2 allocs/op
-BenchmarkAVX2Inline-8   	    1000	   1877260 ns/op	  53.27 MB/s	      64 B/op	       2 allocs/op
+BenchmarkSum/AVX_digest-8             308       3889484 ns/op          25.71 MB/s         5 allocs/op
+BenchmarkSum/AVXInline_digest-8       457       2455437 ns/op          40.73 MB/s         5 allocs/op
+BenchmarkSum/AVX2_digest-8            399       3031102 ns/op          32.99 MB/s         3 allocs/op
+BenchmarkSum/AVX2Inline_digest-8      602       2077719 ns/op          48.13 MB/s         3 allocs/op
+BenchmarkSum/PureGo_digest-8           68       17795480 ns/op          5.62 MB/s         5 allocs/op
 ```
 
 # Contributing
