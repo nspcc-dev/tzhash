@@ -21,6 +21,7 @@ const (
 	AVX2
 	AVX2Inline
 	PureGo
+	AVXInline
 )
 
 var (
@@ -34,6 +35,8 @@ func (impl Implementation) String() string {
 	switch impl {
 	case AVX:
 		return "AVX"
+	case AVXInline:
+		return "AVXInline"
 	case AVX2:
 		return "AVX2"
 	case AVX2Inline:
@@ -49,6 +52,8 @@ func NewWith(impl Implementation) hash.Hash {
 	switch impl {
 	case AVX:
 		return newAVX()
+	case AVXInline:
+		return newAVXInline()
 	case AVX2:
 		return newAVX2()
 	case AVX2Inline:
@@ -65,7 +70,7 @@ func New() hash.Hash {
 	if hasAVX2 {
 		return newAVX2Inline()
 	} else if hasAVX {
-		return newAVX()
+		return newAVXInline()
 	} else {
 		return newPure()
 	}
@@ -78,7 +83,7 @@ func Sum(data []byte) [hashSize]byte {
 		_, _ = d.Write(data) // no errors
 		return d.checkSum()
 	} else if hasAVX {
-		d := newAVX()
+		d := newAVXInline()
 		_, _ = d.Write(data) // no errors
 		return d.checkSum()
 	} else {
