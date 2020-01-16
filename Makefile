@@ -4,7 +4,8 @@ R=\033[0m
 
 NAME ?= homo
 
-.PHONY: help attach auto up down
+.PHONY: help attach auto up down deps
+
 # Show this help prompt
 help:
 	@echo '  Usage:'
@@ -15,22 +16,28 @@ help:
 	@echo ''
 	@awk '/^#/{ comment = substr($$0,3) } comment && /^[a-zA-Z][a-zA-Z0-9_-]+ ?:/{ print "   ", $$1, comment }' $(MAKEFILE_LIST) | column -t -s ':' | grep -v 'IGNORE' | sort | uniq
 
+# Install dependencies
+deps:
+	@go mod tidy -v
+	@go mod vendor
+
 # Auto Tillich-Zémor hasher demo
-auto: down
+auto: down deps
 	@echo "\n${B}${G}build container${R}\n"
 	@time docker build -t poc-demo .
 	@echo "\n${B}${G}Bootup container:${R}\n"
 	@time docker run -d --rm -it --name hash-demo poc-demo:latest sh
 	@bash ./auto.sh
+	@make down
 
 # Stop demo container
 down:
 	@echo "\n${B}${G}Stop container${R}\n"
-	@docker stop hash-demo || true
-	@docker rm hash-demo || true
+	@docker kill hash-demo || true
+	@docker rm -f hash-demo || true
 
 # Run Tillich-Zémor hasher demo
-up: down
+up: down deps
 	@echo "\n${B}${G}build container${R}\n"
 	@time docker build -t poc-demo .
 	@echo "\n${B}${G}enter inside container:${R}\n"
