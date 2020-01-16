@@ -7,7 +7,7 @@ import (
 	"errors"
 	"hash"
 
-	"github.com/nspcc-dev/tzhash/internal/cpuid"
+	"golang.org/x/sys/cpu"
 )
 
 type Implementation int
@@ -25,10 +25,10 @@ const (
 )
 
 var (
-	hasAVX = cpuid.HasAVX()
+	hasAVX = cpu.X86.HasAVX
 	// Having AVX2 does not guarantee
 	// that AVX is also present.
-	hasAVX2 = cpuid.HasAVX2() && hasAVX
+	hasAVX2 = cpu.X86.HasAVX2 && hasAVX
 )
 
 func (impl Implementation) String() string {
