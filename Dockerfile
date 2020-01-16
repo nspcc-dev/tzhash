@@ -1,4 +1,4 @@
-FROM golang:1.11-alpine3.8 as builder
+FROM golang:1-alpine as builder
 
 RUN set -x \
     && apk add --no-cache \
@@ -28,7 +28,7 @@ RUN set -x \
     && go build -mod=vendor -o /go/bin/homo ./cmd/homo/main.go
 
 # Executable image
-FROM alpine:3.8
+FROM alpine:3.11
 
 WORKDIR /fixtures
 
