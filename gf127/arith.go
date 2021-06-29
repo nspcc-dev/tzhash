@@ -112,22 +112,22 @@ func Mul(a, b, c *GF127) {
 
 // Mul10 sets b to a*x.
 func Mul10(a, b *GF127) {
-	c := (a[0] & msb64) >> 63
+	c := a[0] >> 63
 	b[0] = a[0] << 1
 	b[1] = (a[1] << 1) ^ c
-	if b[1]&msb64 != 0 {
-		b[0] ^= x127x631[0]
-		b[1] ^= x127x631[1]
-	}
+
+	mask := b[1] & msb64
+	b[0] ^= mask | (mask >> 63)
+	b[1] ^= mask
 }
 
 // Mul11 sets b to a*(x+1).
 func Mul11(a, b *GF127) {
-	c := (a[0] & msb64) >> 63
+	c := a[0] >> 63
 	b[0] = a[0] ^ (a[0] << 1)
 	b[1] = a[1] ^ (a[1] << 1) ^ c
-	if b[1]&msb64 != 0 {
-		b[0] ^= x127x631[0]
-		b[1] ^= x127x631[1]
-	}
+
+	mask := b[1] & msb64
+	b[0] ^= mask | (mask >> 63)
+	b[1] ^= mask
 }
