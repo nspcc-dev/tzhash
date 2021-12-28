@@ -1,12 +1,9 @@
 #include "textflag.h"
 
-#define mask(bit, src, tmp, to1, to2) \
-    MOVQ src, tmp \
-    SHRQ bit, tmp \
-    ANDQ $1, tmp  \
-    NEGQ tmp      \
-    MOVQ tmp, to1 \
-    VPBROADCASTB to1, to2
+#define mask(bit, tmp, to) \
+    VPSRLW bit, Y10, tmp \
+    VPAND Y12, tmp, to \ // to2 = 0x000<bit>000<bit>...
+    VPSUBW to, Y13, to  // to2 = 0xFFFF.. or 0x0000 depending on bit
 
 #define mulBit(bit) \
     VPSLLQ $1, Y0, Y1 \
@@ -17,7 +14,7 @@
     VPSLLQ $63, Y3, Y3 \
     VPUNPCKHQDQ Y3, Y3, Y3 \
     VPXOR Y2, Y3, Y3 \
-    mask(bit, CX, DX, X1, Y2) \
+    mask(bit, Y11, Y2) \
     VPXOR Y3, Y8, Y3 \
     VPAND Y3, Y2, Y4 \
     VPXOR Y4, Y0, Y8 \
@@ -29,7 +26,13 @@ TEXT ·mulByteRightx2(SB),NOSPLIT,$0
     VMOVDQA (AX), Y0
     MOVQ c01c11+8(FP), BX
     VMOVDQA (BX), Y8
-    MOVB b+16(FP), CX
+
+    VPXOR Y13, Y13, Y13    // Y13 = 0x0000...
+    VPCMPEQB Y12, Y12, Y12 // Y12 = 0xFFFF...
+    VPSUBW Y12, Y13, Y12   // Y12 = 0x00010001... (packed words of 1)
+
+    VPBROADCASTB b+16(FP), X10 // X10 = packed bytes of b.
+    VPMOVZXBW X10, Y10         // Extend with zeroes to packed words.
 
     mulBit($7)
     mulBit($6)
