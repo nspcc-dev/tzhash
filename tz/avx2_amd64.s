@@ -10,8 +10,7 @@
     VPALIGNR $8, Y1, Y0, Y2 \
     VPSRLQ $63, Y2, Y2 \
     VPXOR Y1, Y2, Y2 \
-    VPSRLQ $63, Y1, Y3 \
-    VPSLLQ $63, Y3, Y3 \
+    VPAND Y1, Y14, Y3 \
     VPUNPCKHQDQ Y3, Y3, Y3 \
     VPXOR Y2, Y3, Y3 \
     mask(bit, Y11, Y2) \
@@ -28,8 +27,10 @@ TEXT ·mulByteRightx2(SB),NOSPLIT,$0
     VMOVDQU (BX), Y8
 
     VPXOR Y13, Y13, Y13    // Y13 = 0x0000...
-    VPCMPEQB Y12, Y12, Y12 // Y12 = 0xFFFF...
-    VPSUBW Y12, Y13, Y12   // Y12 = 0x00010001... (packed words of 1)
+    VPCMPEQB Y14, Y14, Y14 // Y14 = 0xFFFF...
+    VPSUBQ Y14, Y13, Y10
+    VPSUBW Y14, Y13, Y12   // Y12 = 0x00010001... (packed words of 1)
+    VPSLLQ $63, Y10, Y14   // Y14 = 0x10000000... (packed quad-words with HSB set)
 
     VPBROADCASTB b+16(FP), X10 // X10 = packed bytes of b.
     VPMOVZXBW X10, Y10         // Extend with zeroes to packed words.
