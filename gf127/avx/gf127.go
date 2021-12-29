@@ -16,10 +16,8 @@ type GF127 = gf127.GF127
 
 const msb64 = uint64(1) << 63
 
-var (
-	// x127x63 represents x^127 + x^63. Used in assembly file.
-	x127x63 = GF127{msb64, msb64}
-)
+// x127x63 represents x^127 + x^63. Used in assembly file.
+var x127x63 = GF127{msb64, msb64} //nolint:deadcode,varcheck
 
 // Add sets c to a+b.
 func Add(a, b, c *GF127)
