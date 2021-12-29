@@ -54,7 +54,7 @@ func (c *sl2) UnmarshalBinary(data []byte) (err error) {
 	return
 }
 
-func (c *sl2) mulStrassen(a, b *sl2, x *[8]GF127) *sl2 {
+func (c *sl2) mulStrassen(a, b *sl2, x *[8]GF127) *sl2 { //nolint:unused
 	// strassen algorithm
 	avx.Add(&a[0][0], &a[1][1], &x[0])
 	avx.Add(&b[0][0], &b[1][1], &x[1])

@@ -17,7 +17,7 @@ var _ hash.Hash = (*digest)(nil)
 
 var (
 	minmax  = [2]GF127{{0, 0}, {math.MaxUint64, math.MaxUint64}}
-	x127x63 = GF127{1 << 63, 1 << 63}
+	x127x63 = GF127{1 << 63, 1 << 63} //nolint:deadcode,varcheck
 )
 
 func newAVX() *digest {
