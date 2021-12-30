@@ -5,19 +5,18 @@
     VPAND Y12, tmp, to \ // to2 = 0x000<bit>000<bit>...
     VPSUBW to, Y13, to  // to2 = 0xFFFF.. or 0x0000 depending on bit
 
-#define mulBit(bit) \
-    VPSLLQ $1, Y0, Y1 \
-    VPALIGNR $8, Y1, Y0, Y2 \
+#define mulBit(bit, in_1, in_2, out_1, out_2) \
+    VPSLLQ $1, in_1, Y1 \
+    VPALIGNR $8, Y1, in_1, Y2 \
     VPSRLQ $63, Y2, Y2 \
     VPXOR Y1, Y2, Y2 \
     VPAND Y1, Y14, Y3 \
     VPUNPCKHQDQ Y3, Y3, Y3 \
     VPXOR Y2, Y3, Y3 \
     mask(bit, Y11, Y2) \
-    VPXOR Y3, Y8, Y3 \
-    VPAND Y3, Y2, Y4 \
-    VPXOR Y4, Y0, Y8 \
-    VMOVDQU Y3, Y0
+    VPXOR Y3, in_2, out_1 \
+    VPAND out_1, Y2, Y4 \
+    VPXOR Y4, in_1, out_2 \
 
 // func mulByteRightx2(c00c10, c01c11 *[4]uint64, b byte)
 TEXT ·mulByteRightx2(SB),NOSPLIT,$0
@@ -35,14 +34,14 @@ TEXT ·mulByteRightx2(SB),NOSPLIT,$0
     VPBROADCASTB b+16(FP), X10 // X10 = packed bytes of b.
     VPMOVZXBW X10, Y10         // Extend with zeroes to packed words.
 
-    mulBit($7)
-    mulBit($6)
-    mulBit($5)
-    mulBit($4)
-    mulBit($3)
-    mulBit($2)
-    mulBit($1)
-    mulBit($0)
+    mulBit($7, Y0, Y8, Y5, Y6)
+    mulBit($6, Y5, Y6, Y0, Y8)
+    mulBit($5, Y0, Y8, Y5, Y6)
+    mulBit($4, Y5, Y6, Y0, Y8)
+    mulBit($3, Y0, Y8, Y5, Y6)
+    mulBit($2, Y5, Y6, Y0, Y8)
+    mulBit($1, Y0, Y8, Y5, Y6)
+    mulBit($0, Y5, Y6, Y0, Y8)
 
     VMOVDQU Y8, (BX)
     VMOVDQU Y0, (AX)
