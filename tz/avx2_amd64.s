@@ -2,8 +2,8 @@
 
 #define mask(bit, tmp, to) \
     VPSRLW bit, Y10, tmp \
-    VPAND Y12, tmp, to \ // to2 = 0x000<bit>000<bit>...
-    VPSUBW to, Y13, to  // to2 = 0xFFFF.. or 0x0000 depending on bit
+    VPAND Y12, tmp, to \   // to = 0x000<bit>000<bit>...
+    VPSUBW to, Y13, to     // to = 0xFFFF.. or 0x0000 depending on bit
 
 #define mulBit(bit, in_1, in_2, out_1, out_2) \
     VPSLLQ $1, in_1, Y1 \
