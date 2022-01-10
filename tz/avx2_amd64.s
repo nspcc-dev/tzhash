@@ -18,8 +18,8 @@
     VPAND out_1, Y2, Y4 \
     VPXOR Y4, in_1, out_2 \
 
-// func mulByteRightx2(c00c10, c01c11 *[4]uint64, b byte)
-TEXT ·mulByteRightx2(SB),NOSPLIT,$0
+// func mulByteSliceRightx2(c00c10, c01c11 *[4]uint64, n int, data *byte)
+TEXT ·mulByteSliceRightx2(SB),NOSPLIT,$0
     MOVQ c00c10+0(FP), AX
     VMOVDQU (AX), Y0
     MOVQ c01c11+8(FP), BX
@@ -31,8 +31,17 @@ TEXT ·mulByteRightx2(SB),NOSPLIT,$0
     VPSUBW Y14, Y13, Y12   // Y12 = 0x00010001... (packed words of 1)
     VPSLLQ $63, Y10, Y14   // Y14 = 0x10000000... (packed quad-words with HSB set)
 
-    VPBROADCASTB b+16(FP), X10 // X10 = packed bytes of b.
+    MOVQ n+16(FP), CX
+    MOVQ data+24(FP), DX
+
+loop:
+    CMPQ CX, $0
+    JEQ finish
+    SUBQ $1, CX
+
+    VPBROADCASTB (DX), X10 // X10 = packed bytes of b.
     VPMOVZXBW X10, Y10         // Extend with zeroes to packed words.
+    ADDQ $1, DX
 
     mulBit($7, Y0, Y8, Y5, Y6)
     mulBit($6, Y5, Y6, Y0, Y8)
@@ -43,6 +52,9 @@ TEXT ·mulByteRightx2(SB),NOSPLIT,$0
     mulBit($1, Y0, Y8, Y5, Y6)
     mulBit($0, Y5, Y6, Y0, Y8)
 
+    JMP loop
+
+finish:
     VMOVDQU Y8, (BX)
     VMOVDQU Y0, (AX)
 
