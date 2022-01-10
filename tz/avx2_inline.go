@@ -25,8 +25,8 @@ func newAVX2Inline() *digest3 {
 
 func (d *digest3) Write(data []byte) (n int, err error) {
 	n = len(data)
-	for _, b := range data {
-		mulByteRightx2(&d.x[0], &d.x[1], b)
+	if len(data) != 0 {
+		mulByteSliceRightx2(&d.x[0], &d.x[1], n, &data[0])
 	}
 	return
 }
@@ -56,4 +56,4 @@ func (d *digest3) checkSum() (b [hashSize]byte) {
 	return
 }
 
-func mulByteRightx2(c00c10 *avx2.GF127x2, c01c11 *avx2.GF127x2, b byte)
+func mulByteSliceRightx2(c00c10 *avx2.GF127x2, c01c11 *avx2.GF127x2, n int, data *byte)
