@@ -33,11 +33,11 @@ func (d *digest) Sum(in []byte) []byte {
 	return append(in, h[:]...)
 }
 
-func (d *digest) checkSum() [hashSize]byte {
+func (d *digest) checkSum() [Size]byte {
 	return d.byteArray()
 }
 
-func (d *digest) byteArray() (b [hashSize]byte) {
+func (d *digest) byteArray() (b [Size]byte) {
 	copy(b[:], d.x[0].ByteArray())
 	copy(b[16:], d.x[1].ByteArray())
 	copy(b[32:], d.x[2].ByteArray())
@@ -68,7 +68,7 @@ func (d *digest) Write(data []byte) (n int, err error) {
 }
 
 func (d *digest) Size() int {
-	return hashSize
+	return Size
 }
 
 func (d *digest) BlockSize() int {

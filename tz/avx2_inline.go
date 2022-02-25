@@ -41,9 +41,9 @@ func (d *digest3) Reset() {
 	d.x[0] = avx2.GF127x2{GF127{1, 0}, GF127{0, 0}}
 	d.x[1] = avx2.GF127x2{GF127{0, 0}, GF127{1, 0}}
 }
-func (d *digest3) Size() int      { return hashSize }
+func (d *digest3) Size() int      { return Size }
 func (d *digest3) BlockSize() int { return hashBlockSize }
-func (d *digest3) checkSum() (b [hashSize]byte) {
+func (d *digest3) checkSum() (b [Size]byte) {
 	// Matrix is stored transposed,
 	// but we need to use order consistent with digest.
 	h := d.x[0].ByteArray()
