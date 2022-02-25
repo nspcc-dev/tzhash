@@ -133,7 +133,7 @@ func TestHomomorphism(t *testing.T) {
 		c1, c2    sl2
 		n         int
 		err       error
-		h, h1, h2 [hashSize]byte
+		h, h1, h2 [Size]byte
 		b         []byte
 	)
 

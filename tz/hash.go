@@ -13,7 +13,8 @@ import (
 type Implementation int
 
 const (
-	hashSize      = 64
+	// Size is the size of a Tillich-Zemor hash sum in bytes.
+	Size          = 64
 	hashBlockSize = 128
 
 	_ Implementation = iota
@@ -77,7 +78,7 @@ func New() hash.Hash {
 }
 
 // Sum returns Tillich-Zémor checksum of data.
-func Sum(data []byte) [hashSize]byte {
+func Sum(data []byte) [Size]byte {
 	if hasAVX2 {
 		d := newAVX2Inline()
 		_, _ = d.Write(data) // no errors
@@ -111,11 +112,11 @@ func Concat(hs [][]byte) ([]byte, error) {
 func Validate(h []byte, hs [][]byte) (bool, error) {
 	var (
 		b             []byte
-		got, expected [hashSize]byte
+		got, expected [Size]byte
 		err           error
 	)
 
-	if len(h) != hashSize {
+	if len(h) != Size {
 		return false, errors.New("invalid hash")
 	} else if len(hs) == 0 {
 		return false, errors.New("empty slice")

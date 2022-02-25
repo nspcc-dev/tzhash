@@ -22,11 +22,11 @@ func (d *digestp) Sum(in []byte) []byte {
 	return append(in, h[:]...)
 }
 
-func (d *digestp) checkSum() [hashSize]byte {
+func (d *digestp) checkSum() [Size]byte {
 	return d.byteArray()
 }
 
-func (d *digestp) byteArray() (b [hashSize]byte) {
+func (d *digestp) byteArray() (b [Size]byte) {
 	for i := 0; i < 4; i++ {
 		t := d.x[i].ByteArray()
 		copy(b[i*16:], t[:])
@@ -58,7 +58,7 @@ func (d *digestp) Write(data []byte) (n int, err error) {
 }
 
 func (d *digestp) Size() int {
-	return hashSize
+	return Size
 }
 
 func (d *digestp) BlockSize() int {

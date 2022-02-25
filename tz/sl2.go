@@ -185,7 +185,7 @@ func (c *sl2) String() string {
 		c[1][0].String() + c[1][1].String()
 }
 
-func (c *sl2) ByteArray() (b [hashSize]byte) {
+func (c *sl2) ByteArray() (b [Size]byte) {
 	t := c[0][0].ByteArray()
 	copy(b[:], t)
 
