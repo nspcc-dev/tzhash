@@ -1,7 +1,3 @@
-// Copyright 2019 (c) NSPCC
-//
-// This file contains AVX2 implementation with inlined
-// assembly calls.
 package tz
 
 import (
