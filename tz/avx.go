@@ -1,6 +1,3 @@
-// Copyright 2018 (c) NSPCC
-//
-// This file contains AVX implementation.
 package tz
 
 import (

@@ -1,6 +1,7 @@
-// Copyright 2018 (c) NSPCC
+// Package tz contains Tillich-Zemor checksum implementations
+// using different backends.
 //
-// Package tz implements general Tillich-Zemo
+// Copyright 2022 (c) NSPCC
 package tz
 
 import (
