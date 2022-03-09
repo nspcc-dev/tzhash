@@ -19,7 +19,7 @@ var id = sl2{
 
 // MarshalBinary implements encoding.BinaryMarshaler.
 func (c *sl2) MarshalBinary() (data []byte, err error) {
-	s := c.ByteArray()
+	s := c.Bytes()
 	return s[:], nil
 }
 
@@ -159,17 +159,17 @@ func (c *sl2) String() string {
 		c[1][0].String() + c[1][1].String()
 }
 
-func (c *sl2) ByteArray() (b [Size]byte) {
-	t := c[0][0].ByteArray()
+func (c *sl2) Bytes() (b [Size]byte) {
+	t := c[0][0].Bytes()
 	copy(b[:], t[:])
 
-	t = c[0][1].ByteArray()
+	t = c[0][1].Bytes()
 	copy(b[16:], t[:])
 
-	t = c[1][0].ByteArray()
+	t = c[1][0].Bytes()
 	copy(b[32:], t[:])
 
-	t = c[1][1].ByteArray()
+	t = c[1][1].Bytes()
 	copy(b[48:], t[:])
 
 	return

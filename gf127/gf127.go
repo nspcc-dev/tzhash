@@ -142,7 +142,7 @@ func Random() *GF127 {
 
 // String returns hex-encoded representation, starting with MSB.
 func (c *GF127) String() string {
-	buf := c.ByteArray()
+	buf := c.Bytes()
 	return hex.EncodeToString(buf[:])
 }
 
@@ -151,9 +151,9 @@ func (c *GF127) Equals(b *GF127) bool {
 	return c[0] == b[0] && c[1] == b[1]
 }
 
-// ByteArray represents element of GF(2^127) as byte array of length 16.
-func (c *GF127) ByteArray() []byte {
-	buf := make([]byte, 16)
+// Bytes represents element of GF(2^127) as byte array of length 16.
+func (c *GF127) Bytes() [16]byte {
+	var buf [16]byte
 	binary.BigEndian.PutUint64(buf[:8], c[1])
 	binary.BigEndian.PutUint64(buf[8:], c[0])
 	return buf
@@ -161,7 +161,7 @@ func (c *GF127) ByteArray() []byte {
 
 // MarshalBinary implements encoding.BinaryMarshaler.
 func (c *GF127) MarshalBinary() (data []byte, err error) {
-	buf := c.ByteArray()
+	buf := c.Bytes()
 	return buf[:], nil
 }
 

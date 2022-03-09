@@ -160,7 +160,7 @@ func TestHomomorphism(t *testing.T) {
 	require.NoError(t, err)
 
 	c1.Mul(&c1, &c2)
-	require.Equal(t, h, c1.ByteArray())
+	require.Equal(t, h, c1.Bytes())
 }
 
 var testCasesConcat = []struct {

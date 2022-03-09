@@ -40,21 +40,17 @@ func (d *digest) Sum(in []byte) []byte {
 	return append(in, h[:]...)
 }
 
-func (d *digest) checkSum() [Size]byte {
-	return d.byteArray()
-}
-
-func (d *digest) byteArray() (b [Size]byte) {
-	t := d.x[0].ByteArray()
+func (d *digest) checkSum() (b [Size]byte) {
+	t := d.x[0].Bytes()
 	copy(b[:], t[:])
 
-	t = d.x[2].ByteArray()
+	t = d.x[2].Bytes()
 	copy(b[16:], t[:])
 
-	t = d.x[1].ByteArray()
+	t = d.x[1].Bytes()
 	copy(b[32:], t[:])
 
-	t = d.x[3].ByteArray()
+	t = d.x[3].Bytes()
 	copy(b[48:], t[:])
 
 	return
