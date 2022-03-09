@@ -37,14 +37,13 @@ func (a *GF127x2) Equal(b *GF127x2) bool {
 // String returns hex-encoded representation, starting with MSB.
 // Elements of pair are separated by comma.
 func (a *GF127x2) String() string {
-	b := a.ByteArray()
+	b := a.Bytes()
 	return hex.EncodeToString(b[:16]) + " , " + hex.EncodeToString(b[16:])
 }
 
-// ByteArray represents element of GF(2^127) as byte array of length 32.
-func (a *GF127x2) ByteArray() (buf []byte) {
-	buf = make([]byte, 32)
-	binary.BigEndian.PutUint64(buf, a[0][1])
+// Bytes represents element of GF(2^127) as byte array of length 32.
+func (a *GF127x2) Bytes() (buf [32]byte) {
+	binary.BigEndian.PutUint64(buf[:], a[0][1])
 	binary.BigEndian.PutUint64(buf[8:], a[0][0])
 	binary.BigEndian.PutUint64(buf[16:], a[1][1])
 	binary.BigEndian.PutUint64(buf[24:], a[1][0])
