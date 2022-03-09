@@ -33,6 +33,7 @@ func Sum(data []byte) [Size]byte {
 	return d.checkSum()
 }
 
+// Sum implements hash.Hash.
 func (d *digest) Sum(in []byte) []byte {
 	// Make a copy of d so that caller can keep writing and summing.
 	d0 := *d
@@ -56,6 +57,7 @@ func (d *digest) checkSum() (b [Size]byte) {
 	return
 }
 
+// Reset implements hash.Hash.
 func (d *digest) Reset() {
 	d.x[0] = GF127{1, 0}
 	d.x[1] = GF127{0, 0}
@@ -63,6 +65,7 @@ func (d *digest) Reset() {
 	d.x[3] = GF127{1, 0}
 }
 
+// Write implements hash.Hash.
 func (d *digest) Write(data []byte) (n int, err error) {
 	return write(d, data)
 }
@@ -83,10 +86,12 @@ func writeGeneric(d *digest, data []byte) (n int, err error) {
 	return
 }
 
+// Size implements hash.Hash.
 func (d *digest) Size() int {
 	return Size
 }
 
+// BlockSize implements hash.Hash.
 func (d *digest) BlockSize() int {
 	return hashBlockSize
 }
