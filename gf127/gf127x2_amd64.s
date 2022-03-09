@@ -1,7 +1,7 @@
 #include "textflag.h"
 
 // func Mul10x2(a, b) *[4]uint64
-TEXT ·Mul10x2(SB), NOSPLIT, $0
+TEXT ·mul10x2AVX2(SB), NOSPLIT, $0
 	MOVQ        a+0(FP), AX
 	VMOVDQA     (AX), Y0
 	VPSLLQ      $1, Y0, Y1
@@ -17,7 +17,7 @@ TEXT ·Mul10x2(SB), NOSPLIT, $0
 	RET
 
 // func Mul11x2(a, b) *[4]uint64
-TEXT ·Mul11x2(SB), NOSPLIT, $0
+TEXT ·mul11x2AVX2(SB), NOSPLIT, $0
 	MOVQ        a+0(FP), AX
 	VMOVDQA     (AX), Y0
 	VPSLLQ      $1, Y0, Y1

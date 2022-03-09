@@ -3,11 +3,11 @@ package tz
 import (
 	"hash"
 
-	"github.com/nspcc-dev/tzhash/gf127/avx2"
+	"github.com/nspcc-dev/tzhash/gf127"
 )
 
 type digest3 struct {
-	x [2]avx2.GF127x2
+	x [2]gf127.GF127x2
 }
 
 // type assertion
@@ -34,8 +34,8 @@ func (d *digest3) Sum(in []byte) []byte {
 	return append(in, h[:]...)
 }
 func (d *digest3) Reset() {
-	d.x[0] = avx2.GF127x2{GF127{1, 0}, GF127{0, 0}}
-	d.x[1] = avx2.GF127x2{GF127{0, 0}, GF127{1, 0}}
+	d.x[0] = gf127.GF127x2{GF127{1, 0}, GF127{0, 0}}
+	d.x[1] = gf127.GF127x2{GF127{0, 0}, GF127{1, 0}}
 }
 func (d *digest3) Size() int      { return Size }
 func (d *digest3) BlockSize() int { return hashBlockSize }
@@ -52,4 +52,4 @@ func (d *digest3) checkSum() (b [Size]byte) {
 	return
 }
 
-func mulByteSliceRightx2(c00c10 *avx2.GF127x2, c01c11 *avx2.GF127x2, n int, data *byte)
+func mulByteSliceRightx2(c00c10 *gf127.GF127x2, c01c11 *gf127.GF127x2, n int, data *byte)

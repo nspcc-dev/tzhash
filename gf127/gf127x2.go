@@ -1,17 +1,22 @@
-package avx2
+package gf127
 
 import (
 	"encoding/binary"
 	"encoding/hex"
-
-	"github.com/nspcc-dev/tzhash/gf127"
 )
-
-// GF127 is an alias for a main type.
-type GF127 = gf127.GF127
 
 // GF127x2 represents a pair of elements of GF(2^127) stored together.
 type GF127x2 [2]GF127
+
+func mul10x2Generic(a, b *GF127x2) {
+	mul10Generic(&a[0], &b[0])
+	mul10Generic(&a[1], &b[1])
+}
+
+func mul11x2Generic(a, b *GF127x2) {
+	mul11Generic(&a[0], &b[0])
+	mul11Generic(&a[1], &b[1])
+}
 
 // Split returns 2 components of pair without additional allocations.
 func Split(a *GF127x2) (*GF127, *GF127) {
@@ -45,9 +50,3 @@ func (a *GF127x2) ByteArray() (buf []byte) {
 	binary.BigEndian.PutUint64(buf[24:], a[1][0])
 	return
 }
-
-// Mul10x2 sets (b1, b2) to (a1*x, a2*x)
-func Mul10x2(a, b *GF127x2)
-
-// Mul10x2 sets (b1, b2) to (a1*(x+1), a2*(x+1))
-func Mul11x2(a, b *GF127x2)
