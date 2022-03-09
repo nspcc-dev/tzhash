@@ -29,50 +29,13 @@
 	VANDPD  X2, X5, X3   \
 	VXORPD  X9, X3, X3
 
-// func mulBitRight(c00, c01, c10, c11, e *[2]uint64)
-TEXT ·mulBitRight(SB), NOSPLIT, $0
-	MOVQ    c00+0(FP), AX
-	VMOVDQU (AX), X0
-	VMOVDQU X0, X8         // remember c00 value
-	MOVQ    c01+8(FP), BX
-	VMOVDQU (BX), X1
-	MOVQ    c10+16(FP), CX
-	VMOVDQU (CX), X2
-	VMOVDQU X2, X9         // remember c10 value
-	MOVQ    c11+24(FP), DX
-	VMOVDQU (DX), X3
-
-	VPXOR    X13, X13, X13 // Y13 = 0x0000...
-	VPCMPEQB X14, X14, X14 // Y14 = 0xFFFF...
-	VPSUBQ   X14, X13, X13
-	VPSLLQ   $63, X13, X14
-
-	mul2(X0, X5, X6, X7) // c00 *= 2
-	VXORPD  X5, X1, X0   // c00 += c01
-	mul2(X2, X5, X6, X7) // c10 *= 2
-	VXORPD  X3, X5, X2   // c10 += c11
-	MOVQ    e+32(FP), CX
-	VMOVDQU (CX), X5
-	VANDPD  X0, X5, X1   // c01 = c00 + e
-	VXORPD  X8, X1, X1   // c01 += X8 (old c00)
-	VANDPD  X2, X5, X3   // c11 = c10 + e
-	VXORPD  X9, X3, X3   // c11 += x9 (old c10)
-
-	VMOVDQU X0, (AX)
-	MOVQ    c10+16(FP), CX
-	VMOVDQU X2, (CX)
-	VMOVDQU X1, (BX)
-	VMOVDQU X3, (DX)
-
-	RET
-
 TEXT ·mulByteRight(SB), NOSPLIT, $0
 	MOVQ    c00+0(FP), AX
 	VMOVDQU (AX), X0
-	MOVQ    c01+8(FP), BX
-	VMOVDQU (BX), X1
-	MOVQ    c10+16(FP), CX
+	MOVQ    c10+8(FP), CX
 	VMOVDQU (CX), X2
+	MOVQ    c01+16(FP), BX
+	VMOVDQU (BX), X1
 	MOVQ    c11+24(FP), DX
 	VMOVDQU (DX), X3
 	MOVQ    $0, CX
@@ -98,7 +61,7 @@ TEXT ·mulByteRight(SB), NOSPLIT, $0
 	mulBit($0)
 
 	VMOVDQU X0, (AX)
-	MOVQ    c10+16(FP), CX
+	MOVQ    c10+8(FP), CX
 	VMOVDQU X2, (CX)
 	VMOVDQU X1, (BX)
 	MOVQ    c11+24(FP), DX

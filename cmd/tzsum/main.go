@@ -11,6 +11,7 @@ import (
 	"runtime/pprof"
 
 	"github.com/nspcc-dev/tzhash/tz"
+	"golang.org/x/sys/cpu"
 )
 
 var (
@@ -46,18 +47,23 @@ func main() {
 		f = os.Stdin
 	}
 
+	// Override CPU feature flags to make sure a proper backend is used.
 	var h hash.Hash
 	switch *hashimpl {
 	case "avx":
-		h = tz.NewWith(tz.AVX)
-	case "avx2":
-		h = tz.NewWith(tz.AVX2)
-	case "avx2inline":
-		h = tz.NewWith(tz.AVX2Inline)
-	case "purego":
-		h = tz.NewWith(tz.PureGo)
-	default:
+		cpu.X86.HasAVX = true
+		cpu.X86.HasAVX2 = false
 		h = tz.New()
+	case "avx2":
+		cpu.X86.HasAVX = true
+		cpu.X86.HasAVX2 = true
+		h = tz.New()
+	case "generic":
+		cpu.X86.HasAVX = false
+		cpu.X86.HasAVX2 = false
+		h = tz.New()
+	default:
+		log.Fatalf("Invalid backend: %s", *hashimpl)
 	}
 
 	if _, err := io.Copy(h, f); err != nil {

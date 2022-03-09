@@ -17,11 +17,13 @@ var id = sl2{
 	{GF127{0, 0}, GF127{1, 0}},
 }
 
+// MarshalBinary implements encoding.BinaryMarshaler.
 func (c *sl2) MarshalBinary() (data []byte, err error) {
 	s := c.ByteArray()
 	return s[:], nil
 }
 
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
 func (c *sl2) UnmarshalBinary(data []byte) (err error) {
 	if len(data) != 64 {
 		return errors.New("data must be 64-bytes long")
@@ -113,6 +115,7 @@ func (c *sl2) MulB() *sl2 {
 	return c
 }
 
+// Mul returns a * b in GL_2(GF(2^127))
 func (c *sl2) Mul(a, b *sl2) *sl2 {
 	var x [4]GF127
 
@@ -158,16 +161,16 @@ func (c *sl2) String() string {
 
 func (c *sl2) ByteArray() (b [Size]byte) {
 	t := c[0][0].ByteArray()
-	copy(b[:], t)
+	copy(b[:], t[:])
 
 	t = c[0][1].ByteArray()
-	copy(b[16:], t)
+	copy(b[16:], t[:])
 
 	t = c[1][0].ByteArray()
-	copy(b[32:], t)
+	copy(b[32:], t[:])
 
 	t = c[1][1].ByteArray()
-	copy(b[48:], t)
+	copy(b[48:], t[:])
 
 	return
 }
