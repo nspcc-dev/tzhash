@@ -1,7 +1,7 @@
 #include "textflag.h"
 
 // func Add(a, b, c *[2]uint64)
-TEXT ·Add(SB), NOSPLIT, $0
+TEXT ·addAVX(SB), NOSPLIT, $0
 	MOVQ   a+0(FP), AX
 	MOVUPD (AX), X0
 	MOVQ   b+8(FP), BX
@@ -12,7 +12,7 @@ TEXT ·Add(SB), NOSPLIT, $0
 	RET
 
 // func Mul10(a, b *[2]uint64)
-TEXT ·Mul10(SB), NOSPLIT, $0
+TEXT ·mul10AVX(SB), NOSPLIT, $0
 	MOVQ        a+0(FP), AX
 	MOVUPD      (AX), X0
 	VPSLLQ      $1, X0, X1
@@ -28,7 +28,7 @@ TEXT ·Mul10(SB), NOSPLIT, $0
 	RET
 
 // func Mul11(a, b *[2]uint64)
-TEXT ·Mul11(SB), NOSPLIT, $0
+TEXT ·mul11AVX(SB), NOSPLIT, $0
 	MOVQ        a+0(FP), AX
 	MOVUPD      (AX), X0
 	VPSLLQ      $1, X0, X1
@@ -45,7 +45,7 @@ TEXT ·Mul11(SB), NOSPLIT, $0
 	RET
 
 // func Mul(a, b, c *[2]uint64)
-TEXT ·Mul(SB), NOSPLIT, $0
+TEXT ·mulAVX(SB), NOSPLIT, $0
 	MOVQ        a+0(FP), AX       // X0 = a0 . a1
 	MOVUPD      (AX), X0          // X0 = a0 . a1
 	MOVQ        b+8(FP), BX       // X1 = b0 . b1
