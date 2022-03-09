@@ -3,9 +3,10 @@
 tmpfile=$(mktemp /tmp/random-file.XXXXXX)
 dd if=/dev/urandom of=$tmpfile bs=$1 count=1
 
-go build ./cmd/tzsum && \
-for impl in avx avx2 avx2inline purego; do
+go build ./cmd/tzsum || exit 1
+
+for impl in avx avx2 generic; do
 	echo $impl implementation:
-	/usr/bin/env time ./tzsum -name $tmpfile -impl $impl
+	time ./tzsum -name $tmpfile -impl $impl
 	echo
 done

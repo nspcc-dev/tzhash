@@ -2,38 +2,29 @@ package tz
 
 import (
 	"encoding/hex"
+	"fmt"
 	"io"
 	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"golang.org/x/sys/cpu"
 )
 
 const benchDataSize = 100000
 
-var providers = []Implementation{
-	AVX,
-	AVXInline,
-	AVX2,
-	AVX2Inline,
-	PureGo,
+type arch struct {
+	HasAVX  bool
+	HasAVX2 bool
 }
 
-func TestNewWith(t *testing.T) {
-	d := NewWith(AVX)
-	require.IsType(t, (*digest)(nil), d)
-
-	d = NewWith(AVXInline)
-	require.IsType(t, (*digest4)(nil), d)
-
-	d = NewWith(AVX2)
-	require.IsType(t, (*digest2)(nil), d)
-
-	d = NewWith(AVX2Inline)
-	require.IsType(t, (*digest3)(nil), d)
-
-	d = NewWith(PureGo)
-	require.IsType(t, (*digestp)(nil), d)
+var backends = []struct {
+	Name string
+	arch
+}{
+	{"AVX", arch{true, false}},
+	{"AVX2", arch{true, true}},
+	{"Generic", arch{false, false}},
 }
 
 var testCases = []struct {
@@ -83,10 +74,12 @@ var testCases = []struct {
 }
 
 func TestHash(t *testing.T) {
-	for i := range providers {
-		p := providers[i]
-		t.Run(p.String()+" digest", func(t *testing.T) {
-			d := NewWith(p)
+	for i, b := range backends {
+		t.Run(b.Name+" digest", func(t *testing.T) {
+			prepareArch(t, backends[i].arch)
+
+			fmt.Println("FEATURES:", cpu.X86.HasAVX, cpu.X86.HasAVX2)
+			d := New()
 			for _, tc := range testCases {
 				d.Reset()
 				_, _ = d.Write(tc.input)
@@ -94,6 +87,20 @@ func TestHash(t *testing.T) {
 				require.Equal(t, tc.hash, hex.EncodeToString(sum[:]))
 			}
 		})
+	}
+}
+
+func prepareArch(t testing.TB, b arch) {
+	realCPU := cpu.X86
+	if !realCPU.HasAVX2 && b.HasAVX2 || !realCPU.HasAVX && b.HasAVX {
+		t.Skip("Underlying CPU doesn't support necessary features")
+	} else {
+		t.Cleanup(func() {
+			cpu.X86.HasAVX = realCPU.HasAVX
+			cpu.X86.HasAVX2 = realCPU.HasAVX2
+		})
+		cpu.X86.HasAVX = b.HasAVX
+		cpu.X86.HasAVX2 = b.HasAVX2
 	}
 }
 
@@ -110,20 +117,20 @@ func newBuffer() (data []byte) {
 
 func BenchmarkSum(b *testing.B) {
 	data := newBuffer()
-	size := int64(len(data))
 
-	for i := range providers {
-		p := providers[i]
-		b.Run(p.String()+" digest", func(b *testing.B) {
+	for i := range backends {
+		b.Run(backends[i].Name+" digest", func(b *testing.B) {
+			prepareArch(b, backends[i].arch)
+
 			b.ResetTimer()
 			b.ReportAllocs()
-			d := NewWith(p)
+			d := New()
 			for i := 0; i < b.N; i++ {
 				d.Reset()
 				_, _ = d.Write(data)
 				d.Sum(nil)
 			}
-			b.SetBytes(size)
+			b.SetBytes(int64(len(data)))
 		})
 	}
 }
