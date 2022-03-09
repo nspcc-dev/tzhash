@@ -47,3 +47,10 @@ up: down deps
 attach:
 	@echo "\n${B}${G} attach to hash-container ${R}\n"
 	@time docker exec -it --name hash-demo /bin/sh
+
+# Test code with all backends
+test:
+	go test ./...
+
+test.generic:
+	go test ./... --tags=generic
