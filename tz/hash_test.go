@@ -151,6 +151,7 @@ func TestHomomorphism(t *testing.T) {
 
 	// Test if our hashing is really homomorphic
 	h = Sum(b)
+	require.NotEqual(t, [64]byte{}, h)
 	h1 = Sum(b[:32])
 	h2 = Sum(b[32:])
 
