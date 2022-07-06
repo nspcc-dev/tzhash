@@ -29,6 +29,7 @@ func New() *digest {
 // Sum returns Tillich-Zémor checksum of data.
 func Sum(data []byte) [Size]byte {
 	d := new(digest)
+	d.Reset()
 	_, _ = d.Write(data) // no errors
 	return d.checkSum()
 }
