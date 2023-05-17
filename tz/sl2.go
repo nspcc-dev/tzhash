@@ -136,9 +136,9 @@ func (c *sl2) Mul(a, b *sl2) *sl2 {
 }
 
 // Inv returns inverse of a in GL_2(GF(2^127)).
-func Inv(a *sl2) (b *sl2) {
+func (c *sl2) Inv() (b *sl2) {
 	b = new(sl2)
-	inv(a, b, new([2]GF127))
+	inv(c, b, new([2]GF127))
 	return
 }
 

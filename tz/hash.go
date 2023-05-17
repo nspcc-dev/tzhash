@@ -61,7 +61,7 @@ func SubtractR(c, b []byte) (a []byte, err error) {
 		return nil, err
 	}
 
-	p1 = *Inv(&p2)
+	p1 = *p2.Inv()
 	p1.Mul(&r, &p1)
 
 	return p1.MarshalBinary()
@@ -80,7 +80,7 @@ func SubtractL(c, a []byte) (b []byte, err error) {
 		return nil, err
 	}
 
-	p2 = *Inv(&p1)
+	p2 = *p1.Inv()
 	p2.Mul(&p2, &r)
 
 	return p2.MarshalBinary()
