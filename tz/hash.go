@@ -1,4 +1,4 @@
-// Package tz contains Tillich-Zemor checksum implementations
+// Package tz contains Tillich-Zémor checksum implementations
 // using different backends.
 //
 // Copyright 2022 (c) NSPCC
@@ -49,7 +49,7 @@ func Validate(h []byte, hs [][]byte) (bool, error) {
 }
 
 // SubtractR returns hash a, such that Concat(a, b) == c
-// This is possible, because Tillich-Zemor hash is actually a matrix
+// This is possible, because Tillich-Zémor hash is actually a matrix
 // which can be inversed.
 func SubtractR(c, b []byte) (a []byte, err error) {
 	var p1, p2, r sl2
@@ -68,7 +68,7 @@ func SubtractR(c, b []byte) (a []byte, err error) {
 }
 
 // SubtractL returns hash b, such that Concat(a, b) == c
-// This is possible, because Tillich-Zemor hash is actually a matrix
+// This is possible, because Tillich-Zémor hash is actually a matrix
 // which can be inversed.
 func SubtractL(c, a []byte) (b []byte, err error) {
 	var p1, p2, r sl2
