@@ -8,7 +8,7 @@ import (
 	"math/rand"
 )
 
-// GF127 represents element of GF(2^127)
+// GF127 represents element of GF(2^127).
 type GF127 [2]uint64
 
 const (
@@ -17,7 +17,7 @@ const (
 	msb64     = uint64(1) << 63
 )
 
-// x127x631 is reduction polynomial x^127 + x^63 + 1
+// x127x631 is reduction polynomial x^127 + x^63 + 1.
 var x127x631 = GF127{msb64 + 1, msb64}
 
 // New constructs new element of GF(2^127) as hi*x^64 + lo.
@@ -146,7 +146,7 @@ func (c *GF127) String() string {
 	return hex.EncodeToString(buf[:])
 }
 
-// Equals checks if two reduced (zero MSB) elements of GF(2^127) are equal
+// Equals checks if two reduced (zero MSB) elements of GF(2^127) are equal.
 func (c *GF127) Equals(b *GF127) bool {
 	return c[0] == b[0] && c[1] == b[1]
 }

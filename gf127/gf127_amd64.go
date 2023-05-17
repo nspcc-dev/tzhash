@@ -10,7 +10,7 @@ package gf127
 
 import "golang.org/x/sys/cpu"
 
-// x127x63 represents x^127 + x^63
+// x127x63 represents x^127 + x^63.
 var x127x63 = GF127{msb64, msb64} //nolint:deadcode,varcheck
 
 // Add sets c to a+b.
