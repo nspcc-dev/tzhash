@@ -1,6 +1,8 @@
 package tz
 
 import (
+	"hash"
+
 	"github.com/nspcc-dev/tzhash/gf127"
 )
 
@@ -20,7 +22,7 @@ type digest struct {
 }
 
 // New returns a new hash.Hash computing the Tillich-Zémor checksum.
-func New() *digest {
+func New() hash.Hash {
 	d := new(digest)
 	d.Reset()
 	return d
