@@ -1,5 +1,4 @@
 //go:build amd64 && !generic
-// +build amd64,!generic
 
 // Package gf127 implements the GF(2^127) arithmetic
 // modulo reduction polynomial x^127 + x^63 + 1 .
