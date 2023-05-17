@@ -52,7 +52,7 @@ func TestInv(t *testing.T) {
 	c = new(sl2)
 	for i := 0; i < 5; i++ {
 		a = random()
-		b = Inv(a)
+		b = a.Inv()
 		c = c.Mul(a, b)
 
 		require.Equal(t, id, *c)

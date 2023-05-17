@@ -21,6 +21,10 @@ deps:
 	@go mod tidy -v
 	@go mod vendor
 
+# Run linter
+lint:
+	@golangci-lint run
+
 # Auto Tillich-Zémor hasher demo
 auto: down deps
 	@echo "\n${B}${G}build container${R}\n"

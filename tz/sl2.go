@@ -115,7 +115,7 @@ func (c *sl2) MulB() *sl2 {
 	return c
 }
 
-// Mul returns a * b in GL_2(GF(2^127))
+// Mul returns a * b in GL_2(GF(2^127)).
 func (c *sl2) Mul(a, b *sl2) *sl2 {
 	var x [4]GF127
 
@@ -135,10 +135,10 @@ func (c *sl2) Mul(a, b *sl2) *sl2 {
 	return c
 }
 
-// Inv returns inverse of a in GL_2(GF(2^127))
-func Inv(a *sl2) (b *sl2) {
+// Inv returns inverse of a in GL_2(GF(2^127)).
+func (c *sl2) Inv() (b *sl2) {
 	b = new(sl2)
-	inv(a, b, new([2]GF127))
+	inv(c, b, new([2]GF127))
 	return
 }
 
