@@ -21,7 +21,7 @@ type digest struct {
 	x [4]GF127
 }
 
-// New returns a new hash.Hash computing the Tillich-Zémor checksum.
+// New returns a new [hash.Hash] computing the Tillich-Zémor checksum.
 func New() hash.Hash {
 	d := new(digest)
 	d.Reset()
