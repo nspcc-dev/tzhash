@@ -159,13 +159,13 @@ func (c *GF127) Bytes() [16]byte {
 	return buf
 }
 
-// MarshalBinary implements encoding.BinaryMarshaler.
+// MarshalBinary implements [encoding.BinaryMarshaler].
 func (c *GF127) MarshalBinary() (data []byte, err error) {
 	buf := c.Bytes()
 	return buf[:], nil
 }
 
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+// UnmarshalBinary implements [encoding.BinaryUnmarshaler].
 func (c *GF127) UnmarshalBinary(data []byte) error {
 	if len(data) != byteSize {
 		return errors.New("data must be 16-bytes long")

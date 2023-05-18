@@ -1,11 +1,5 @@
 //go:build amd64 && !generic
-// +build amd64,!generic
 
-// Package gf127 implements the GF(2^127) arithmetic
-// modulo reduction polynomial x^127 + x^63 + 1 .
-// This is rather straight-forward re-implementation of C library
-// available here https://github.com/srijs/hwsl2-core .
-// Interfaces are highly influenced by math/big .
 package gf127
 
 import "golang.org/x/sys/cpu"
