@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano()) //nolint:staticcheck // SA1019: rand.Seed has been deprecated since Go 1.20 and an alternative has been available since Go 1.0
 }
 
 func random() (a *sl2) {

@@ -145,7 +145,7 @@ func TestHomomorphism(t *testing.T) {
 	)
 
 	b = make([]byte, 64)
-	n, err = rand.Read(b)
+	n, err = rand.Read(b) //nolint:staticcheck // SA1019: rand.Read has been deprecated since Go 1.20 because it shouldn't be used
 	require.Equal(t, 64, n)
 	require.NoError(t, err)
 
