@@ -33,7 +33,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.21'
+          go-version: '1.22'
           cache: true
 
       - name: Update Go modules
@@ -55,14 +55,14 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-20.04, windows-2022 ]
-        go_versions: [ '1.19', '1.20', '1.21' ]
+        go_versions: [ '1.20', '1.21', '1.22' ]
         exclude:
           - os: windows-2022
-            go_versions: '1.19'
-          - os: windows-2022
             go_versions: '1.20'
-          - os: ubuntu-20.04
+          - os: windows-2022
             go_versions: '1.21'
+          - os: ubuntu-20.04
+            go_versions: '1.22'
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
