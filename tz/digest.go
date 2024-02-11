@@ -38,9 +38,7 @@ func Sum(data []byte) [Size]byte {
 
 // Sum implements hash.Hash.
 func (d *digest) Sum(in []byte) []byte {
-	// Make a copy of d so that caller can keep writing and summing.
-	d0 := *d
-	h := d0.checkSum()
+	h := d.checkSum()
 	return append(in, h[:]...)
 }
 
