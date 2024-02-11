@@ -6,6 +6,7 @@ package tz
 
 import (
 	"errors"
+	"fmt"
 )
 
 // Concat performs combining of hashes based on homomorphic property.
@@ -40,7 +41,7 @@ func Validate(h []byte, hs [][]byte) (bool, error) {
 
 	b, err = Concat(hs)
 	if err != nil {
-		return false, errors.New("cant concatenate hashes")
+		return false, fmt.Errorf("can't concatenate hashes: %w", err)
 	}
 
 	copy(got[:], b)
