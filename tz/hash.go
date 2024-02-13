@@ -5,7 +5,9 @@
 package tz
 
 import (
+	"crypto/subtle"
 	"errors"
+	"fmt"
 )
 
 // Concat performs combining of hashes based on homomorphic property.
@@ -25,9 +27,8 @@ func Concat(hs [][]byte) ([]byte, error) {
 // Validate checks if hashes in hs combined are equal to h.
 func Validate(h []byte, hs [][]byte) (bool, error) {
 	var (
-		b             []byte
-		got, expected [Size]byte
-		err           error
+		b   []byte
+		err error
 	)
 
 	if len(h) != Size {
@@ -36,16 +37,12 @@ func Validate(h []byte, hs [][]byte) (bool, error) {
 		return false, errors.New("empty slice")
 	}
 
-	copy(expected[:], h)
-
 	b, err = Concat(hs)
 	if err != nil {
-		return false, errors.New("cant concatenate hashes")
+		return false, fmt.Errorf("can't concatenate hashes: %w", err)
 	}
 
-	copy(got[:], b)
-
-	return expected == got, nil
+	return subtle.ConstantTimeCompare(h, b) == 1, nil
 }
 
 // SubtractR returns hash a, such that Concat(a, b) == c
