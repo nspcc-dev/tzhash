@@ -36,9 +36,6 @@ jobs:
           go-version: '1.22'
           cache: true
 
-      - name: Update Go modules
-        run: go mod download -json
-
       - name: Write coverage profile
         run: go test -v ./... -coverprofile=./coverage.txt -covermode=atomic
 
@@ -74,9 +71,6 @@ jobs:
         with:
           go-version: '${{ matrix.go_versions }}'
           cache: true
-
-      - name: Update Go modules
-        run: go mod download -json
 
       - name: Run tests
         run: go test -v ./...
