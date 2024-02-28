@@ -12,7 +12,8 @@ import (
 type GF127 [2]uint64
 
 const (
-	byteSize  = 16
+	// Size represents [GF127] state size in bytes.
+	Size      = 16
 	maxUint64 = ^uint64(0)
 	msb64     = uint64(1) << 63
 )
@@ -167,7 +168,7 @@ func (c *GF127) MarshalBinary() (data []byte, err error) {
 
 // UnmarshalBinary implements [encoding.BinaryUnmarshaler].
 func (c *GF127) UnmarshalBinary(data []byte) error {
-	if len(data) != byteSize {
+	if len(data) != Size {
 		return errors.New("data must be 16-bytes long")
 	}
 
