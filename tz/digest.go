@@ -1,6 +1,8 @@
 package tz
 
 import (
+	"errors"
+	"fmt"
 	"hash"
 
 	"github.com/nspcc-dev/tzhash/gf127"
@@ -22,6 +24,8 @@ type digest struct {
 }
 
 // New returns a new [hash.Hash] computing the Tillich-Zémor checksum.
+// The Hash also implements [encoding.BinaryMarshaler] and [encoding.BinaryUnmarshaler]
+// to marshal and unmarshal the internal state of the hash.
 func New() hash.Hash {
 	d := new(digest)
 	d.Reset()
@@ -121,4 +125,44 @@ func mulBitRightGeneric(c00, c10, c01, c11 *GF127, bit bool, tmp *GF127) {
 		gf127.Add(c10, c11, c10)
 		*c11 = *tmp
 	}
+}
+
+// MarshalBinary implements [encoding.BinaryMarshaler].
+func (d *digest) MarshalBinary() ([]byte, error) {
+	var (
+		b = make([]byte, 0, Size)
+	)
+
+	for _, a := range d.x {
+		state, err := a.MarshalBinary()
+		if err != nil {
+			return nil, err
+		}
+
+		b = append(b, state...)
+	}
+
+	return b, nil
+}
+
+// UnmarshalBinary implements [encoding.BinaryUnmarshaler].
+func (d *digest) UnmarshalBinary(b []byte) error {
+	if len(b) != Size {
+		return errors.New("tz: invalid hash state size")
+	}
+
+	var (
+		start, end int
+	)
+
+	for i := 0; i < 4; i++ {
+		start = gf127.Size * i
+		end = start + gf127.Size
+
+		if err := d.x[i].UnmarshalBinary(b[start:end]); err != nil {
+			return fmt.Errorf("gf127 unmarshal: %w", err)
+		}
+	}
+
+	return nil
 }
