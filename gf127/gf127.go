@@ -35,13 +35,13 @@ func addGeneric(a, b, c *GF127) {
 func mulGeneric(a, b, c *GF127) {
 	r := new(GF127)
 	d := *a
-	for i := uint(0); i < 64; i++ {
+	for i := range uint(64) {
 		if b[0]&(1<<i) != 0 {
 			addGeneric(r, &d, r)
 		}
 		mul10Generic(&d, &d)
 	}
-	for i := uint(0); i < 63; i++ {
+	for i := range uint(63) {
 		if b[1]&(1<<i) != 0 {
 			addGeneric(r, &d, r)
 		}

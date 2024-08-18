@@ -125,7 +125,7 @@ func BenchmarkSum(b *testing.B) {
 			b.ResetTimer()
 			b.ReportAllocs()
 			d := New()
-			for i := 0; i < b.N; i++ {
+			for range b.N {
 				d.Reset()
 				_, _ = d.Write(data)
 				d.Sum(nil)
@@ -195,7 +195,7 @@ func TestConcat(t *testing.T) {
 		require.NoError(t, err)
 
 		ps = make([][]byte, len(tc.Parts))
-		for j := 0; j < len(tc.Parts); j++ {
+		for j := range tc.Parts {
 			ps[j], err = hex.DecodeString(tc.Parts[j])
 			require.NoError(t, err)
 		}
@@ -219,7 +219,7 @@ func TestValidate(t *testing.T) {
 		require.NoError(t, err)
 
 		ps = make([][]byte, len(tc.Parts))
-		for j := 0; j < len(tc.Parts); j++ {
+		for j := range tc.Parts {
 			ps[j], _ = hex.DecodeString(tc.Parts[j])
 			require.NoError(t, err)
 		}

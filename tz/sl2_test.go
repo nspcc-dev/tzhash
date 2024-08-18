@@ -50,7 +50,7 @@ func TestInv(t *testing.T) {
 	var a, b, c *sl2
 
 	c = new(sl2)
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		a = random()
 		b = a.Inv()
 		c = c.Mul(a, b)
