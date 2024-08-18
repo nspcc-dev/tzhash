@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"math/bits"
-	"math/rand"
+	"math/rand/v2"
 )
 
 // GF127 represents element of GF(2^127).
