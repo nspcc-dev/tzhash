@@ -92,7 +92,7 @@ func TestInv(t *testing.T) {
 		require.Equal(t, tc[1], c)
 	}
 
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		// 0 has no inverse
 		if a = Random(); a.Equals(&GF127{0, 0}) {
 			continue

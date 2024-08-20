@@ -1,10 +1,10 @@
 package tz
 
 import (
+	"bytes"
 	"encoding/hex"
 	"fmt"
-	"io"
-	"math/rand"
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -104,19 +104,8 @@ func prepareArch(t testing.TB, b arch) {
 	}
 }
 
-func newBuffer() (data []byte) {
-	data = make([]byte, benchDataSize)
-
-	r := rand.New(rand.NewSource(0))
-	_, err := io.ReadFull(r, data)
-	if err != nil {
-		panic("cant initialize buffer")
-	}
-	return
-}
-
 func BenchmarkSum(b *testing.B) {
-	data := newBuffer()
+	data := bytes.Repeat([]byte{0x01, 0x02, 0x03, 0x04, 0x05}, benchDataSize/5)
 
 	for i := range backends {
 		b.Run(backends[i].Name+" digest", func(b *testing.B) {
@@ -125,7 +114,7 @@ func BenchmarkSum(b *testing.B) {
 			b.ResetTimer()
 			b.ReportAllocs()
 			d := New()
-			for i := 0; i < b.N; i++ {
+			for range b.N {
 				d.Reset()
 				_, _ = d.Write(data)
 				d.Sum(nil)
@@ -136,24 +125,24 @@ func BenchmarkSum(b *testing.B) {
 }
 
 func TestHomomorphism(t *testing.T) {
+	const halfInputSize = 32
 	var (
 		c1, c2    sl2
-		n         int
 		err       error
 		h, h1, h2 [Size]byte
 		b         []byte
 	)
 
-	b = make([]byte, 64)
-	n, err = rand.Read(b) //nolint:staticcheck // SA1019: rand.Read has been deprecated since Go 1.20 because it shouldn't be used
-	require.Equal(t, 64, n)
-	require.NoError(t, err)
+	b = slices.Concat(
+		bytes.Repeat([]byte{0x01}, halfInputSize),
+		bytes.Repeat([]byte{0x02}, halfInputSize),
+	)
 
 	// Test if our hashing is really homomorphic
 	h = Sum(b)
 	require.NotEqual(t, [64]byte{}, h)
-	h1 = Sum(b[:32])
-	h2 = Sum(b[32:])
+	h1 = Sum(b[:halfInputSize])
+	h2 = Sum(b[halfInputSize:])
 
 	err = c1.UnmarshalBinary(h1[:])
 	require.NoError(t, err)
@@ -195,7 +184,7 @@ func TestConcat(t *testing.T) {
 		require.NoError(t, err)
 
 		ps = make([][]byte, len(tc.Parts))
-		for j := 0; j < len(tc.Parts); j++ {
+		for j := range tc.Parts {
 			ps[j], err = hex.DecodeString(tc.Parts[j])
 			require.NoError(t, err)
 		}
@@ -219,7 +208,7 @@ func TestValidate(t *testing.T) {
 		require.NoError(t, err)
 
 		ps = make([][]byte, len(tc.Parts))
-		for j := 0; j < len(tc.Parts); j++ {
+		for j := range tc.Parts {
 			ps[j], _ = hex.DecodeString(tc.Parts[j])
 			require.NoError(t, err)
 		}

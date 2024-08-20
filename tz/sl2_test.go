@@ -1,17 +1,11 @@
 package tz
 
 import (
-	"math/rand"
 	"testing"
-	"time"
 
 	"github.com/nspcc-dev/tzhash/gf127"
 	"github.com/stretchr/testify/require"
 )
-
-func init() {
-	rand.Seed(time.Now().UnixNano()) //nolint:staticcheck // SA1019: rand.Seed has been deprecated since Go 1.20 and an alternative has been available since Go 1.0
-}
 
 func random() (a *sl2) {
 	a = new(sl2)
@@ -50,7 +44,7 @@ func TestInv(t *testing.T) {
 	var a, b, c *sl2
 
 	c = new(sl2)
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		a = random()
 		b = a.Inv()
 		c = c.Mul(a, b)

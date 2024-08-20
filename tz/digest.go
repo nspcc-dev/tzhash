@@ -155,7 +155,7 @@ func (d *digest) UnmarshalBinary(b []byte) error {
 		start, end int
 	)
 
-	for i := 0; i < 4; i++ {
+	for i := range d.x {
 		start = gf127.Size * i
 		end = start + gf127.Size
 
