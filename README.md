@@ -1,3 +1,8 @@
+[![codecov](https://codecov.io/gh/nspcc-dev/tzhash/branch/master/graph/badge.svg)](https://codecov.io/gh/nspcc-dev/tzhash)
+[![Report](https://goreportcard.com/badge/github.com/nspcc-dev/tzhash)](https://goreportcard.com/report/github.com/nspcc-dev/tzhash)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/nspcc-dev/tzhash?sort=semver)
+![License](https://img.shields.io/github/license/nspcc-dev/tzhash.svg?style=popout)
+
 # Demo
 
 [![asciicast](https://asciinema.org/a/IArEDLTrQyabI3agSSpINoqNu.svg)](https://asciinema.org/a/IArEDLTrQyabI3agSSpINoqNu)
