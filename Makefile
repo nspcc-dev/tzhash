@@ -21,8 +21,11 @@ deps:
 	@go mod tidy -v
 	@go mod vendor
 
+.golangci.yml:
+	wget -O $@ https://github.com/nspcc-dev/.github/raw/master/.golangci.yml
+
 # Run linter
-lint:
+lint: .golangci.yml
 	@golangci-lint run
 
 # Auto Tillich-Zémor hasher demo
