@@ -26,7 +26,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24'
+          go-version: '1.25'
           cache: true
 
       - name: Write coverage profile
@@ -45,14 +45,14 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-2022, macos-14 ]
-        go_versions: [ '1.23', '1.24' ]
+        go_versions: [ '1.24', '1.25' ]
         exclude:
           - os: macos-14
-            go_versions: '1.23'
-          - os: windows-2022
-            go_versions: '1.23'
-          - os: ubuntu-latest
             go_versions: '1.24'
+          - os: windows-2022
+            go_versions: '1.24'
+          - os: ubuntu-latest
+            go_versions: '1.25'
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
