@@ -111,10 +111,9 @@ func BenchmarkSum(b *testing.B) {
 		b.Run(backends[i].Name+" digest", func(b *testing.B) {
 			prepareArch(b, backends[i].arch)
 
-			b.ResetTimer()
 			b.ReportAllocs()
 			d := New()
-			for range b.N {
+			for b.Loop() {
 				d.Reset()
 				_, _ = d.Write(data)
 				d.Sum(nil)
