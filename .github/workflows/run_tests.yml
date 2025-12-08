@@ -44,12 +44,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-2022, macos-14 ]
+        os: [ ubuntu-latest, windows-latest, macos-14 ]
         go_versions: [ '1.24', '1.25' ]
         exclude:
           - os: macos-14
             go_versions: '1.24'
-          - os: windows-2022
+          - os: windows-latest
             go_versions: '1.24'
           - os: ubuntu-latest
             go_versions: '1.25'
