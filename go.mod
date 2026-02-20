@@ -1,10 +1,10 @@
 module github.com/nspcc-dev/tzhash
 
-go 1.24
+go 1.25
 
 require (
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/sys v0.35.0
+	golang.org/x/sys v0.41.0
 )
 
 require (
