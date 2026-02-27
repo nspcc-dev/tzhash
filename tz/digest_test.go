@@ -20,7 +20,7 @@ func Test_digest_marshaling(t *testing.T) {
 		hashSum        []byte
 	)
 
-	for i := byte(0); i < 10; i++ {
+	for i := range byte(10) {
 		n, err := d.Write([]byte{i})
 		require.NoError(t, err)
 		require.Equal(t, 1, n)

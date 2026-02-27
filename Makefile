@@ -4,7 +4,7 @@ R=\033[0m
 
 NAME ?= homo
 
-.PHONY: help attach auto up down deps
+.PHONY: help attach auto up down deps modernize
 
 # Show this help prompt
 help:
@@ -27,6 +27,11 @@ deps:
 # Run linter
 lint: .golangci.yml
 	@golangci-lint run
+
+# Prettify code
+modernize:
+	@echo "Processing modernize check"
+	@go run golang.org/x/tools/go/analysis/passes/modernize/cmd/modernize@latest -fix ./...
 
 # Auto Tillich-Zémor hasher demo
 auto: down deps
