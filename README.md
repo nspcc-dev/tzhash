@@ -3,6 +3,10 @@
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/nspcc-dev/tzhash?sort=semver)
 ![License](https://img.shields.io/github/license/nspcc-dev/tzhash.svg?style=popout)
 
+# Archived
+
+This repository is archived and is no longer maintained, see https://github.com/nspcc-dev/neofs-node/issues/3847 for details.
+
 # Demo
 
 [![asciicast](https://asciinema.org/a/IArEDLTrQyabI3agSSpINoqNu.svg)](https://asciinema.org/a/IArEDLTrQyabI3agSSpINoqNu)
